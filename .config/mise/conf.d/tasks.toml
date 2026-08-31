@@ -1,3 +1,61 @@
 [tasks.dev]
 description = "Install development dependencies"
 run = "uv sync -U --dev --all-extras --all-groups"
+
+[tasks.build-rust]
+description = "Build Rust extension with maturin"
+run = "uv run maturin develop"
+
+[tasks.build-rust-release]
+description = "Build Rust extension release with maturin"
+run = "uv run maturin develop --release"
+
+[tasks.add-skills]
+description = "Install agent skills for AI assistants (driven by data/dev-features.csv and skills.csv)"
+depends = ["dev"]
+run = "uv run .config/mise/scripts/install_dev_features.py add-skills"
+
+[tasks.lint]
+description = "Run linter (ruff)"
+run = 'ruff check src/ tests/ --fix --unsafe-fixes'
+
+[tasks.typecheck]
+description = "Run type checker (ty)"
+run = 'ty check src/ tests/'
+
+[tasks.spell]
+description = "Run spell checker (codespell)"
+run = "codespell src/ tests/"
+
+[tasks.format]
+description = "Format code (ruff, isort, clean-sort)"
+run = [
+	"csort run src/ tests/ scripts/ --config .config/csort.toml",
+	"ruff format src/ tests/",
+	"ruff check src/ tests/ --select I --fix",
+]
+
+[tasks.format-md]
+description = "Lint and reformat Markdown files with rumdl"
+run = "rumdl fmt --config .config/rumdl.toml src/ docs/ tests/ ./"
+
+[tasks.test]
+description = "Run tests with coverage"
+run = "uv run pytest --cov=xcorr_signals"
+sources = ["src/**/*.py", "tests/**/*.py"]
+outputs = ["htmlcov/", ".coverage"]
+
+[tasks.all]
+description = "Run all quality checks"
+depends = [
+  "test",
+  "lint",
+  "spell",
+  "format",
+  "format-md",
+  "docs",
+]
+
+[tasks.clean]
+description = "Clean build artifacts"
+run = ["rm -rf build dist *.egg-info .pytest_cache .coverage htmlcov docs/_build target"]
