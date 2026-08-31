@@ -14,9 +14,12 @@ Kept compact — agents hallucinate less when they know where definitions live.
 | What                   | Where                                                           | Key names                                       |
 | ---------------------- | --------------------------------------------------------------- | ----------------------------------------------- |
 | Package source root    | `src/xcorr_signals/`  | `__init__.py`, `__about__.py` (version)         |
+| Rust core              | `src/xcorr_signals/src/`  | `xcorr.rs` (DSP), `pyo3_bindings.rs` (bindings) |
+| Rust crate manifest    | `src/xcorr_signals/Cargo.toml`  | lib name `_native`, crate-type `cdylib`         |
+| Native module name     | `xcorr_signals._native`  | set in `[tool.maturin]` in `pyproject.toml`      |
 | CLI entry points       | `src/xcorr_signals/cli/`            | `app.py` (Typer app), `args.py`, `commands.py`  |
 | Test suite             | `tests/`                                                        | `test_*.py`, `conftest.py`                      |
-| Project metadata       | `pyproject.toml`                                                | `[project]`, `[tool.pytest.ini_options]`        |
+| Project metadata       | `pyproject.toml`                                                | `[project]`, `[tool.pytest.ini_options]`, `[tool.maturin]` |
 | Linter/formatter       | `ruff.toml`                                                     | Ruff rule selection, line length                |
 | Type checker           | `ty.toml`                                                       | ty strictness                                   |
 | Markdown linter        | `.config/rumdl.toml`                                            | `line-length`, `flavor`, disabled rules         |
