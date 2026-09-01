@@ -3,8 +3,6 @@
 
 """CLI argument definitions (Annotated-style OptionInfo)."""
 
-from pathlib import Path
-
 import typer
 
 # NOTE: options below carry only their parameter info — no positional
@@ -62,5 +60,3 @@ OutputFileArg = typer.Option(
     help="Output file path (defaults to XCORR_SIGNALS_OUTPUT_FILE env var or stdout)",
     envvar="XCORR_SIGNALS_OUTPUT_FILE",
 )
-
-Path_ = Path

@@ -38,8 +38,8 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling", "uv-dynamic-versioning", "maturin>=0.20"]
-build-backend = "hatchling.build"
+requires = ["hatchling", "uv-dynamic-versioning", "maturin>=1.5.0"]
+build-backend = "maturin"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/xcorr_signals"]
@@ -63,6 +63,11 @@ pattern = '^(?P<base>\d{4}\.\d{1,2}\.\d+)$'
 manifest-path = "src/xcorr_signals/Cargo.toml"
 python-source = "src"
 module-name = "xcorr_signals._native"
+include = ["Cargo.toml", "src/**/*.rs"]
+# target/ would otherwise be packaged when building from an extracted
+# sdist (no .gitignore there) — wheel balloons to gigabytes and zip64
+# fails with "Large file option has not been set".
+exclude = ["**/target/**"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
