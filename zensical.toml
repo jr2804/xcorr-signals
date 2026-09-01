@@ -21,6 +21,12 @@ nav = [
   { "Examples" = [
     { "XCorr Examples" = "examples/index.md" },
   ] },
+  { "Concepts" = [
+    { "Math Primer" = "concepts/index.md" },
+    { "Cross-correlation" = "concepts/cross-correlation.md" },
+    { "Convolution" = "concepts/convolution.md" },
+    { "Hilbert Transform" = "concepts/hilbert-transform.md" },
+  ] },
   { "Architecture" = [
     { "Overview" = "architecture/overview.md" },
     { "Decisions (ADRs)" = [

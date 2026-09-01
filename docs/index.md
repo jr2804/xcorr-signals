@@ -13,6 +13,7 @@ hide:
 - [Quickstart](getting-started/quickstart.md)
 - [Delay Estimation Guide](guides/delay-estimation.md)
 - [XCorr Examples](examples/index.md)
+- [Concepts](concepts/index.md) — math primer (cross-correlation, convolution, Hilbert transform)
 - [Architecture Overview](architecture/overview.md)
 - [API reference](reference/api.md)
 - [CLI reference](reference/cli.md)

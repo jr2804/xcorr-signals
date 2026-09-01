@@ -11,8 +11,9 @@ rules only.
 - Authoring standards: `.agents/skills/project-docs/SKILL.md` (Diátaxis,
   nav registration, frontmatter `title`).
 - Figures: `docs/assets/images/*.svg` are **generated** by
-  `scripts/gen_examples.py` — never hand-edit; rerun the script instead.
-  Keep each SVG under 10 MB (rasterize heatmaps, downsample grids).
+  `scripts/gen_examples.py` and `scripts/gen_math_figures.py` — never
+  hand-edit; rerun the relevant script instead. Keep each SVG under 10 MB
+  (rasterize heatmaps, downsample grids).
 - Diagrams: Mermaid fences (`pymdownx.superfences` custom fence
   `mermaid`), defined in `zensical.toml`.
 - Navigation: every `.md` page must appear in `nav` in `zensical.toml`.
