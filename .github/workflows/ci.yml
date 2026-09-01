@@ -35,6 +35,9 @@ jobs:
         fetch-depth: 0
         fetch-tags: true
 
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+
     - name: Setup Python
       uses: actions/setup-python@v6
       with:
@@ -84,6 +87,9 @@ jobs:
       with:
         fetch-depth: 0
         fetch-tags: true
+
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
 
     - name: Setup Python
       uses: actions/setup-python@v6
