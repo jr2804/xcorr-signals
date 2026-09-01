@@ -1025,6 +1025,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Properties
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wienerkhinchin-deterministic-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Wiener–Khinchin (deterministic form)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#relation-to-convolution" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1614,6 +1636,28 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Properties
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#wienerkhinchin-deterministic-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Wiener–Khinchin (deterministic form)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#relation-to-convolution" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1736,14 +1780,34 @@ sample-by-sample and summed.</p>
 <span class="arithmatex">\(+60\)</span> samples (orange). Shaded regions mark the overlapping interval.
 <em>Bottom row:</em> the cross-correlation function. The value at each lag is the sum
 of products inside the overlap.</p>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<p>For real signals the cross-correlation satisfies three useful inequalities
+(all proven directly from the Cauchy–Schwarz inequality):</p>
+<ul>
+<li><strong>Maximum at lag 0</strong> (autocorrelation):  <span class="arithmatex">\(\varphi_{xx}(0) = E_x\)</span> (signal energy).</li>
+<li><strong>Bounded</strong>:  <span class="arithmatex">\(|\varphi_{xy}(\tau)| \le \sqrt{\varphi_{xx}(0)\,\varphi_{yy}(0)}\)</span>.</li>
+<li><strong>Even symmetry</strong> (autocorrelation):  <span class="arithmatex">\(\varphi_{xx}(-\tau) = \varphi_{xx}(\tau)\)</span>.</li>
+</ul>
+<h2 id="wienerkhinchin-deterministic-form">Wiener–Khinchin (deterministic form)<a class="headerlink" href="#wienerkhinchin-deterministic-form" title="Permanent link">&para;</a></h2>
+<p>The autocorrelation and the <strong>energy density spectrum</strong> are a Fourier pair:</p>
+<div class="arithmatex">\[
+\varphi_{xx}(\tau) \;\xleftrightarrow{\;\mathcal{F}\;}\; |X(f)|^{2}
+\]</div>
+<p>This is the bridge between "shape matching" in the time domain and spectral
+content in the frequency domain. For random (power) signals the same theorem
+holds with autocorrelation replaced by its time average and the energy spectrum
+replaced by the <strong>power spectral density</strong> (PSD).</p>
 <h2 id="relation-to-convolution">Relation to convolution<a class="headerlink" href="#relation-to-convolution" title="Permanent link">&para;</a></h2>
 <p>Cross-correlation looks like convolution, but <strong>without flipping</strong> the second
-signal. The two operations are related by a time-reversal:</p>
+signal. The two operations are related by a time-reversal and conjugation:</p>
 <div class="arithmatex">\[
-x \star y \;=\; \overline{x(-t)} * y(t)
+(x \star y)(t) \;=\; \overline{x(-t)} * y(t)
+\;=\; \int_{-\infty}^{\infty} \overline{x(\tau)}\,y(t+\tau)\,d\tau
 \]</div>
-<p>In the frequency domain this becomes a point-wise multiplication with a
-complex-conjugate:</p>
+<p>If <span class="arithmatex">\(x\)</span> is real the conjugate disappears and the relation simplifies to the
+time-reversal identity shown in the figure below.</p>
+<p>In the frequency domain the point-wise spectrum multiplication carries the
+conjugate on the second factor:</p>
 <div class="arithmatex">\[
 \mathcal{F}\{x \star y\}(\omega) \;=\; X(\omega)\,\overline{Y(\omega)}
 \]</div>

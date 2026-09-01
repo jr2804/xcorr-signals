@@ -1686,8 +1686,10 @@ cross-correlation.</p>
 x \star h \;=\; \overline{x(-t)} * h(t)
 \]</div>
 <p>In words: <em>correlate</em> <span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(h\)</span> = <em>convolve</em> the time-reversed conjugate of
-<span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(h\)</span>. The peak of the cross-correlation therefore appears at the
-negative of the lag that would align the flipped kernel in a convolution.</p>
+<span class="arithmatex">\(x\)</span> with <span class="arithmatex">\(h\)</span>. The conjugate matters only for complex signals; for real signals
+it reduces to a simple time reversal. The peak of the cross-correlation
+therefore appears at the negative of the lag that would align the flipped
+kernel in a convolution.</p>
 <p><img alt="Convolution flips the kernel; cross-correlation shifts without flipping" src="../../assets/images/math_conv_vs_corr.svg" /></p>
 <h2 id="system-model-delay-as-a-shifted-impulse">System model: delay as a shifted impulse<a class="headerlink" href="#system-model-delay-as-a-shifted-impulse" title="Permanent link">&para;</a></h2>
 <p>In an ideal acoustic path the output is the input delayed by <span class="arithmatex">\(k_0\)</span> samples:</p>

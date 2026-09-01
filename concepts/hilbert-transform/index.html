@@ -1707,6 +1707,12 @@ convolution</p>
 <li>Negative frequencies are shifted by <span class="arithmatex">\(+90°\)</span> (<span class="arithmatex">\(+i\)</span>).</li>
 <li>DC (<span class="arithmatex">\(\omega = 0\)</span>) is zeroed.</li>
 </ul>
+<p>In spectral terms the Hilbert operator multiplies the positive-frequency
+lobe of <span class="arithmatex">\(X(f)\)</span> by <span class="arithmatex">\(-j\)</span> and the negative-frequency lobe by <span class="arithmatex">\(+j\)</span>, leaving
+the magnitude unchanged. This sign discrimination is what makes the
+Hilbert transform indispensable for <strong>single-sideband (SSB) modulation</strong>:
+by removing one spectral sideband, SSB halves the transmission bandwidth
+without losing information.</p>
 <p>Applying the transform twice returns the negative original:
 <span class="arithmatex">\(\mathcal{H}\{\mathcal{H}[x]\} = -x\)</span>.</p>
 <h2 id="analytic-signal-and-envelope">Analytic signal and envelope<a class="headerlink" href="#analytic-signal-and-envelope" title="Permanent link">&para;</a></h2>
