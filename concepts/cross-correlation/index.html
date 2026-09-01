@@ -12,13 +12,13 @@
         <meta name="author" content="Jan.Reimes">
       
       
-        <link rel="canonical" href="https://github.com/jr2804/xcorr-signals/reference/cli/">
+        <link rel="canonical" href="https://github.com/jr2804/xcorr-signals/concepts/cross-correlation/">
       
       
-        <link rel="prev" href="../api/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../contributing/">
+        <link rel="next" href="../convolution/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>CLI Reference - Cross-correlation for audio signals</title>
+        <title>Cross-correlation - Cross-correlation for audio signals</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#channel-pairing" class="md-skip">
+        <a href="#continuous-definition" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI Reference
+              Cross-correlation
             
           </span>
         </div>
@@ -321,6 +321,8 @@
   
   
   
+    
+  
   
     
       
@@ -339,8 +341,8 @@
     
     
     
-      <li class="md-tabs__item">
-        <a href="../../concepts/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Concepts
@@ -385,7 +387,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../api/" class="md-tabs__link">
+      <a href="../../reference/api/" class="md-tabs__link">
         
   
   API reference
@@ -399,11 +401,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="././" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../reference/cli/" class="md-tabs__link">
         
   
   CLI reference
@@ -869,6 +869,8 @@
       
   
   
+    
+  
   
   
     
@@ -888,20 +890,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../concepts/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -918,13 +923,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -940,10 +945,34 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../concepts/cross-correlation/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Cross-correlation
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
         
   
   
@@ -958,6 +987,102 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#continuous-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Continuous definition
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#discrete-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Discrete definition
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relation-to-convolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Relation to convolution
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaling-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Scaling options
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-the-peak-is-the-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Why the peak is the delay
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fft-computation-and-zero-padding" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        FFT computation and zero-padding
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        References
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -970,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/convolution/" class="md-nav__link">
+      <a href="../convolution/" class="md-nav__link">
         
   
   
@@ -997,7 +1122,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/hilbert-transform/" class="md-nav__link">
+      <a href="../hilbert-transform/" class="md-nav__link">
         
   
   
@@ -1268,7 +1393,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../reference/api/" class="md-nav__link">
         
   
   
@@ -1291,34 +1416,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  CLI reference
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="././" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference/cli/" class="md-nav__link">
         
   
   
@@ -1333,108 +1434,6 @@
   
 
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#channel-pairing" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Channel pairing
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Commands
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xcorr" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>xcorr</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-vs-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-vs-time</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-from-average" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-from-average</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#compensate-delay" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>compensate-delay</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Options
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1593,10 +1592,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#channel-pairing" class="md-nav__link">
+  <a href="#continuous-definition" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Channel pairing
+        Continuous definition
       </span>
     </span>
   </a>
@@ -1604,71 +1603,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#discrete-definition" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Commands
+        Discrete definition
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xcorr" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>xcorr</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-vs-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-vs-time</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-from-average" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-from-average</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#compensate-delay" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>compensate-delay</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
+  <a href="#relation-to-convolution" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Options
+        Relation to convolution
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#scaling-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Scaling options
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-the-peak-is-the-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Why the peak is the delay
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fft-computation-and-zero-padding" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        FFT computation and zero-padding
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        References
       </span>
     </span>
   </a>
@@ -1696,7 +1689,7 @@
                 
                   
   
-    <a href="https://github.com/jr2804/xcorr-signals/edit/master/docs/reference/cli.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/jr2804/xcorr-signals/edit/master/docs/concepts/cross-correlation.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
     </a>
@@ -1705,166 +1698,138 @@
     
       
     
-    <a href="https://github.com/jr2804/xcorr-signals/raw/master/docs/reference/cli.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/jr2804/xcorr-signals/raw/master/docs/concepts/cross-correlation.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
     </a>
   
 
 
-  <h1 id="__skip">CLI Reference</h1>
+  <h1 id="__skip">Cross-correlation</h1>
 
-<p>Entry point <code>xcorr-signals</code> (<code>xcorr_signals.cli.app:cli</code>). Global option
-<code>--version</code> / <code>-v</code> prints the package version.</p>
-<p>The CLI covers the pipeline
-<strong>cross-correlation → estimate delay → compensate delay</strong>:</p>
+<p>In signal processing, cross-correlation is a measure of similarity of two
+series as a function of the displacement of one relative to the other. It is
+the tool that turns a pair of audio waveforms into a single number — the delay
+— at every point in time.</p>
+<h2 id="continuous-definition">Continuous definition<a class="headerlink" href="#continuous-definition" title="Permanent link">&para;</a></h2>
+<p>For continuous functions <span class="arithmatex">\(x(t)\)</span> and <span class="arithmatex">\(y(t)\)</span> the cross-correlation is</p>
+<div class="arithmatex">\[
+R_{xy}(\tau) \;\triangleq\; \int_{-\infty}^{\infty} \overline{x(t)}\,y(t+\tau)\,dt
+\]</div>
+<p>which is equivalent to</p>
+<div class="arithmatex">\[
+R_{xy}(\tau) \;\triangleq\; \int_{-\infty}^{\infty} \overline{x(t-\tau)}\,y(t)\,dt
+\]</div>
+<p>The bar denotes the complex conjugate (omitted for real signals). The lag
+<span class="arithmatex">\(\tau\)</span> is the amount by which <span class="arithmatex">\(y\)</span> must be shifted so that it best matches
+<span class="arithmatex">\(x\)</span>.</p>
+<h2 id="discrete-definition">Discrete definition<a class="headerlink" href="#discrete-definition" title="Permanent link">&para;</a></h2>
+<p>For sampled signals of length <span class="arithmatex">\(N\)</span></p>
+<div class="arithmatex">\[
+R_{xy}[k] \;\triangleq\; \sum_{n=-\infty}^{\infty} \overline{x[n]}\,y[n+k]
+\]</div>
+<p>In practice the sum runs over the overlapping samples only. This is exactly
+a <strong>sliding dot product</strong>: at each lag <span class="arithmatex">\(k\)</span> the two signals are multiplied
+sample-by-sample and summed.</p>
+<p><img alt="Sliding dot product: three lags and the resulting correlation function" src="../../assets/images/math_sliding_dot.svg" /></p>
+<p><em>Top row:</em> the test burst (blue) and the same burst shifted by <span class="arithmatex">\(-30\)</span>, <span class="arithmatex">\(0\)</span>, and
+<span class="arithmatex">\(+60\)</span> samples (orange). Shaded regions mark the overlapping interval.
+<em>Bottom row:</em> the cross-correlation function. The value at each lag is the sum
+of products inside the overlap.</p>
+<h2 id="relation-to-convolution">Relation to convolution<a class="headerlink" href="#relation-to-convolution" title="Permanent link">&para;</a></h2>
+<p>Cross-correlation looks like convolution, but <strong>without flipping</strong> the second
+signal. The two operations are related by a time-reversal:</p>
+<div class="arithmatex">\[
+x \star y \;=\; \overline{x(-t)} * y(t)
+\]</div>
+<p>In the frequency domain this becomes a point-wise multiplication with a
+complex-conjugate:</p>
+<div class="arithmatex">\[
+\mathcal{F}\{x \star y\}(\omega) \;=\; X(\omega)\,\overline{Y(\omega)}
+\]</div>
+<p><img alt="Convolution flips the kernel; cross-correlation does not" src="../../assets/images/math_conv_vs_corr.svg" /></p>
+<p><em>Left:</em> signals <span class="arithmatex">\(x\)</span> (blue) and <span class="arithmatex">\(h\)</span> (orange). <em>Middle:</em> convolution <span class="arithmatex">\(x*h\)</span>
+with <span class="arithmatex">\(h\)</span> flipped. <em>Right:</em> cross-correlation <span class="arithmatex">\(x \star h\)</span> with <span class="arithmatex">\(h\)</span> simply
+shifted. The peak location is different because the flip changes the sign of
+the lag.</p>
+<h2 id="scaling-options">Scaling options<a class="headerlink" href="#scaling-options" title="Permanent link">&para;</a></h2>
+<p>Raw cross-correlation values depend on signal length and amplitude. Five
+normalisation modes are supported — exactly the same set used by
+<strong>elephant</strong> (<code>scaleopt</code>) and MATLAB (<code>xcorr(..., scaleopt)</code>):</p>
 <table>
 <thead>
 <tr>
-<th>Command</th>
-<th>Pipeline step</th>
-<th>Output</th>
+<th>Mode</th>
+<th>Symbolic form</th>
+<th>Effect</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>xcorr</code></td>
-<td>1. Cross-correlation lags/values</td>
-<td>CSV per (lag, value, channel pair)</td>
+<td><strong>none</strong></td>
+<td>—</td>
+<td>Raw sum of products.  Values grow with <span class="arithmatex">\(N\)</span> and with signal power.</td>
 </tr>
 <tr>
-<td><code>delay-vs-time</code></td>
-<td>2a. Per-frame delay estimates</td>
-<td>CSV per (time, delay, peak, reliability)</td>
+<td><strong>biased</strong></td>
+<td><span class="arithmatex">\(R_{xy}[k] / N\)</span></td>
+<td>Divides by the number of samples.  Suppresses edge peaks but biases the estimate.</td>
 </tr>
 <tr>
-<td><code>delay-from-average</code></td>
-<td>2b. Single delay from averaged peak</td>
-<td>CSV per (delay, channel pair)</td>
+<td><strong>unbiased</strong></td>
+<td>$R_{xy}[k] / (N -</td>
+<td>k</td>
 </tr>
 <tr>
-<td><code>compensate-delay</code></td>
-<td>3. Zero-pad test + reference to align</td>
-<td>2 WAV files + delay summary</td>
+<td><strong>coeff</strong></td>
+<td><span class="arithmatex">\(R_{xy}[k] / \sqrt{\Sigma_x \Sigma_y}\)</span></td>
+<td>Normalises by the geometric mean of the energies so that the autocorrelation at lag 0 equals 1.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="channel-pairing">Channel pairing<a class="headerlink" href="#channel-pairing" title="Permanent link">&para;</a></h2>
-<p>Every analysis command takes a test WAV (x) and a reference WAV (y) and
-applies the pairing rule of <code>xcorr_signals.channels.channel_pairs</code>
-(1-indexed channels):</p>
+<!-- markdownlint-disable-next-line MD013 -->
+<p>| <strong>normalized</strong> | <em>same as coeff</em> | In <code>xcorr_signals</code> <strong>coeff</strong> and <strong>normalized</strong> share the<br>same implementation, matching elephant's treatment of the two keywords as synonyms. |</p>
+<blockquote>
+<p><strong>Verified against elephant source code</strong> (NeuralEnsemble/elephant,
+<code>signal_processing.py</code>): elephant uses the identical formulas — <code>biased</code>
+divides by <span class="arithmatex">\(N\)</span>, <code>unbiased</code> by <span class="arithmatex">\(N - |k|\)</span>, and both <code>coeff</code> and <code>normalized</code>
+divide by <span class="arithmatex">\(\sqrt{(x^2_\mathrm{sum})(y^2_\mathrm{sum})}\)</span>. Both packages
+also <strong>z-score</strong> the inputs before correlation.</p>
+</blockquote>
+<p><img alt="The five scaling modes on the same noisy burst pair" src="../../assets/images/math_scaling.svg" /></p>
+<p><em>Top-left:</em> raw values are ~500. <em>Top-right:</em> biased brings them to ~1.
+<em>Bottom-left:</em> unbiased keeps the centre at ~1 but magnifies noise at the
+edges. <em>Bottom-right:</em> normalized/coeff fixes the central peak at exactly 1.</p>
+<h2 id="why-the-peak-is-the-delay">Why the peak is the delay<a class="headerlink" href="#why-the-peak-is-the-delay" title="Permanent link">&para;</a></h2>
+<p>If <span class="arithmatex">\(y[n] = x[n - k_0] + \text{noise}\)</span>, the cross-correlation satisfies</p>
+<div class="arithmatex">\[
+\arg\max_\tau R_{xy}(\tau) \;\approx\; k_0
+\]</div>
+<p>because the shifted copy aligns perfectly at <span class="arithmatex">\(\tau = k_0\)</span>. This is the
+principle behind every delay-estimation command in the CLI.</p>
+<h2 id="fft-computation-and-zero-padding">FFT computation and zero-padding<a class="headerlink" href="#fft-computation-and-zero-padding" title="Permanent link">&para;</a></h2>
+<p>A naive <span class="arithmatex">\(O(N^2)\)</span> sliding-dot-product sum is too slow for long audio. The
+FFT turns the operation into <span class="arithmatex">\(O(N \log N)\)</span>:</p>
+<ol>
+<li>Pad both signals to the next power of two <span class="arithmatex">\(\ge 2N - 1\)</span>.</li>
+<li>FFT both padded arrays.</li>
+<li>Multiply the first spectrum by the complex conjugate of the second.</li>
+<li>Inverse-FFT and remap the circular lags to a linear lag axis.</li>
+</ol>
+<p><strong>Zero-padding is essential.</strong> Without it the inverse FFT produces <em>circular</em>
+cross-correlation, where the tail of one signal wraps around and corrupts the
+beginning of the result. <code>xcorr_signals</code> pads automatically to the smallest
+power of two <span class="arithmatex">\(\ge 2N - 1\)</span> so the output is a true <strong>linear</strong>
+cross-correlation.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
 <ul>
-<li>1 test channel + 1 reference channel → single pair <code>(1, 1)</code></li>
-<li>N test channels + 1 reference channel → all combinations
-  <code>(1, 1), (2, 1), ..., (N, 1)</code></li>
-<li>M test channels + M reference channels → pairwise <code>(1, 1), (2, 2), ...</code></li>
-<li>any other channel count → error</li>
+<li>Wikipedia, <em>Cross-correlation</em> — <a href="https://en.wikipedia.org/wiki/Cross-correlation">https://en.wikipedia.org/wiki/Cross-correlation</a></li>
+<li>Wikipedia, <em>Convolution</em> — <a href="https://en.wikipedia.org/wiki/Convolution">https://en.wikipedia.org/wiki/Convolution</a></li>
+<li>Hanus, R. (2019). <em>Time delay estimation of random signals using cross-correlation with Hilbert Transform</em>. Measurement, 144, 67–74.
+  DOI <a href="https://doi.org/10.1016/j.measurement.2019.07.014">10.1016/j.measurement.2019.07.014</a></li>
+<li>NeuralEnsemble/elephant <code>cross_correlation_function</code> source —
+  <a href="https://github.com/NeuralEnsemble/elephant/blob/master/elephant/signal_processing.py">https://github.com/NeuralEnsemble/elephant/blob/master/elephant/signal_processing.py</a></li>
 </ul>
-<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
-<h3 id="xcorr"><code>xcorr</code><a class="headerlink" href="#xcorr" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>xcorr<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Cross-correlation per channel pair. CSV columns:
-<code>lag, value, test_channel, reference_channel</code>.</p>
-<h3 id="delay-vs-time"><code>delay-vs-time</code><a class="headerlink" href="#delay-vs-time" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-vs-time<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-r<span class="w"> </span>THRESHOLD<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Per-frame delay estimates (Mode 1). CSV columns:
-<code>time_seconds, delay, peak, reliable, test_channel, reference_channel</code>.</p>
-<h3 id="delay-from-average"><code>delay-from-average</code><a class="headerlink" href="#delay-from-average" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-from-average<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Single delay from the averaged xcorr peak (Mode 2). CSV columns:
-<code>delay, test_channel, reference_channel</code>.</p>
-<h3 id="compensate-delay"><code>compensate-delay</code><a class="headerlink" href="#compensate-delay" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>compensate-delay<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-d<span class="w"> </span>MAX_DELAY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>PREFIX<span class="o">]</span>
-</code></pre></div>
-<p>Estimates the delay from the strongest xcorr peak across all channel
-pairs, then zero-pads test and reference so the pair is time-aligned
-(mirrors <code>_compensate_signals</code> in the SQA preprocessor). Writes
-<code>PREFIX_test_compensated.wav</code> and <code>PREFIX_reference_compensated.wav</code>
-(default prefix: test file without extension) and prints the applied
-delay.</p>
-<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Short</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>test_file</code></td>
-<td></td>
-<td>path</td>
-<td>Test signal WAV (x), positional</td>
-</tr>
-<tr>
-<td><code>reference_file</code></td>
-<td></td>
-<td>path</td>
-<td>Reference signal WAV (y), positional</td>
-</tr>
-<tr>
-<td><code>--frame-size</code></td>
-<td><code>-f</code></td>
-<td>int ≥ 1</td>
-<td>Frame size in samples</td>
-</tr>
-<tr>
-<td><code>--hop-size</code></td>
-<td><code>-H</code></td>
-<td>int ≥ 1</td>
-<td>Hop size in samples</td>
-</tr>
-<tr>
-<td><code>--n-lags</code></td>
-<td><code>-n</code></td>
-<td>int</td>
-<td>Lag search window (± n_lags)</td>
-</tr>
-<tr>
-<td><code>--scaling</code></td>
-<td><code>-s</code></td>
-<td>enum</td>
-<td><code>normalized</code>, <code>coeff</code>, <code>biased</code>, <code>unbiased</code>, <code>none</code></td>
-</tr>
-<tr>
-<td><code>--hilbert-envelope</code></td>
-<td></td>
-<td>flag</td>
-<td>Hilbert envelope of the xcorr</td>
-</tr>
-<tr>
-<td><code>--reliability-threshold</code></td>
-<td><code>-r</code></td>
-<td>float</td>
-<td>Minimum peak for reliable frames</td>
-</tr>
-<tr>
-<td><code>--max-delay</code></td>
-<td><code>-d</code></td>
-<td>float s</td>
-<td>Delay search range for <code>compensate-delay</code></td>
-</tr>
-<tr>
-<td><code>--output-file</code></td>
-<td><code>-o</code></td>
-<td>path</td>
-<td>CSV output; honors <code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
-</tr>
-<tr>
-<td><code>--output-prefix</code></td>
-<td><code>-o</code></td>
-<td>str</td>
-<td>WAV output prefix for <code>compensate-delay</code></td>
-</tr>
-</tbody>
-</table>
-<p><code>--help</code> on any command prints the effective argument list.</p>
 
 
 
@@ -1959,7 +1924,7 @@ delay.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../api/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API reference">
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: Math Primer">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
@@ -1969,20 +1934,20 @@ delay.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                API reference
+                Math Primer
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing">
+          <a href="../convolution/" class="md-footer__link md-footer__link--next" aria-label="Next: Convolution">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Contributing
+                Convolution
               </div>
             </div>
             <div class="md-footer__button md-icon">

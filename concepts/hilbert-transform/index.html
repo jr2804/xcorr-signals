@@ -12,13 +12,13 @@
         <meta name="author" content="Jan.Reimes">
       
       
-        <link rel="canonical" href="https://github.com/jr2804/xcorr-signals/reference/cli/">
+        <link rel="canonical" href="https://github.com/jr2804/xcorr-signals/concepts/hilbert-transform/">
       
       
-        <link rel="prev" href="../api/">
+        <link rel="prev" href="../convolution/">
       
       
-        <link rel="next" href="../../contributing/">
+        <link rel="next" href="../../architecture/overview/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>CLI Reference - Cross-correlation for audio signals</title>
+        <title>Hilbert Transform - Cross-correlation for audio signals</title>
       
     
     
@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#channel-pairing" class="md-skip">
+        <a href="#definition" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CLI Reference
+              Hilbert Transform
             
           </span>
         </div>
@@ -321,6 +321,8 @@
   
   
   
+    
+  
   
     
       
@@ -339,8 +341,8 @@
     
     
     
-      <li class="md-tabs__item">
-        <a href="../../concepts/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   Concepts
@@ -385,7 +387,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../api/" class="md-tabs__link">
+      <a href="../../reference/api/" class="md-tabs__link">
         
   
   API reference
@@ -399,11 +401,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="././" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../reference/cli/" class="md-tabs__link">
         
   
   CLI reference
@@ -869,6 +869,8 @@
       
   
   
+    
+  
   
   
     
@@ -888,20 +890,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../concepts/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -918,13 +923,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -943,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/cross-correlation/" class="md-nav__link">
+      <a href="../cross-correlation/" class="md-nav__link">
         
   
   
@@ -970,7 +975,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../concepts/convolution/" class="md-nav__link">
+      <a href="../convolution/" class="md-nav__link">
         
   
   
@@ -994,10 +999,34 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../concepts/hilbert-transform/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  Hilbert Transform
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="././" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1012,6 +1041,91 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Definition
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analytic-signal-and-envelope" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Analytic signal and envelope
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#envelope-of-the-cross-correlation-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Envelope of the cross-correlation function
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ccfht-the-zero-crossing-method-hanus-2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        CCFHT — the zero-crossing method (Hanus 2019)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-in-xcorr_signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Implementation in xcorr_signals
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        References
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1268,7 +1382,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/" class="md-nav__link">
+      <a href="../../reference/api/" class="md-nav__link">
         
   
   
@@ -1291,34 +1405,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-  CLI reference
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="././" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../reference/cli/" class="md-nav__link">
         
   
   
@@ -1333,108 +1423,6 @@
   
 
       </a>
-      
-        
-
-
-<nav class="md-nav md-nav--secondary" aria-label="On this page">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      On this page
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#channel-pairing" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Channel pairing
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Commands
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xcorr" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>xcorr</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-vs-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-vs-time</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-from-average" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-from-average</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#compensate-delay" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>compensate-delay</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Options
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1593,10 +1581,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#channel-pairing" class="md-nav__link">
+  <a href="#definition" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Channel pairing
+        Definition
       </span>
     </span>
   </a>
@@ -1604,71 +1592,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#commands" class="md-nav__link">
+  <a href="#analytic-signal-and-envelope" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Commands
+        Analytic signal and envelope
       </span>
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Commands">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#xcorr" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>xcorr</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-vs-time" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-vs-time</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#delay-from-average" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>delay-from-average</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#compensate-delay" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        <code>compensate-delay</code>
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
+  <a href="#envelope-of-the-cross-correlation-function" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Options
+        Envelope of the cross-correlation function
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ccfht-the-zero-crossing-method-hanus-2019" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        CCFHT — the zero-crossing method (Hanus 2019)
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-in-xcorr_signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Implementation in xcorr_signals
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        References
       </span>
     </span>
   </a>
@@ -1696,7 +1667,7 @@
                 
                   
   
-    <a href="https://github.com/jr2804/xcorr-signals/edit/master/docs/reference/cli.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/jr2804/xcorr-signals/edit/master/docs/concepts/hilbert-transform.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-pen" viewBox="0 0 24 24"><path d="M12.659 22H18a2 2 0 0 0 2-2V8a2.4 2.4 0 0 0-.706-1.706l-3.588-3.588A2.4 2.4 0 0 0 14 2H6a2 2 0 0 0-2 2v9.34"/><path d="M14 2v5a1 1 0 0 0 1 1h5M10.378 12.622a1 1 0 0 1 3 3.003L8.36 20.637a2 2 0 0 1-.854.506l-2.867.837a.5.5 0 0 1-.62-.62l.836-2.869a2 2 0 0 1 .506-.853z"/></svg>
     </a>
@@ -1705,166 +1676,97 @@
     
       
     
-    <a href="https://github.com/jr2804/xcorr-signals/raw/master/docs/reference/cli.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/jr2804/xcorr-signals/raw/master/docs/concepts/hilbert-transform.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-file-code-2" viewBox="0 0 24 24"><path d="M4 12.15V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.706.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2h-3.35"/><path d="M14 2v5a1 1 0 0 0 1 1h5M5 16l-3 3 3 3M9 22l3-3-3-3"/></svg>
     </a>
   
 
 
-  <h1 id="__skip">CLI Reference</h1>
+  <h1 id="__skip">Hilbert Transform</h1>
 
-<p>Entry point <code>xcorr-signals</code> (<code>xcorr_signals.cli.app:cli</code>). Global option
-<code>--version</code> / <code>-v</code> prints the package version.</p>
-<p>The CLI covers the pipeline
-<strong>cross-correlation → estimate delay → compensate delay</strong>:</p>
-<table>
-<thead>
-<tr>
-<th>Command</th>
-<th>Pipeline step</th>
-<th>Output</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>xcorr</code></td>
-<td>1. Cross-correlation lags/values</td>
-<td>CSV per (lag, value, channel pair)</td>
-</tr>
-<tr>
-<td><code>delay-vs-time</code></td>
-<td>2a. Per-frame delay estimates</td>
-<td>CSV per (time, delay, peak, reliability)</td>
-</tr>
-<tr>
-<td><code>delay-from-average</code></td>
-<td>2b. Single delay from averaged peak</td>
-<td>CSV per (delay, channel pair)</td>
-</tr>
-<tr>
-<td><code>compensate-delay</code></td>
-<td>3. Zero-pad test + reference to align</td>
-<td>2 WAV files + delay summary</td>
-</tr>
-</tbody>
-</table>
-<h2 id="channel-pairing">Channel pairing<a class="headerlink" href="#channel-pairing" title="Permanent link">&para;</a></h2>
-<p>Every analysis command takes a test WAV (x) and a reference WAV (y) and
-applies the pairing rule of <code>xcorr_signals.channels.channel_pairs</code>
-(1-indexed channels):</p>
+<p>The Hilbert transform turns a real signal into its 90° phase-shifted partner.
+Together they form the <strong>analytic signal</strong>, whose magnitude is the <strong>envelope</strong>
+of the original. In <code>xcorr_signals</code> the envelope is applied to the
+cross-correlation function (CCF), producing a smoother peak that is easier to
+localise — especially when the CCF is noisy or oscillatory.</p>
+<h2 id="definition">Definition<a class="headerlink" href="#definition" title="Permanent link">&para;</a></h2>
+<p>For a real signal <span class="arithmatex">\(x(t)\)</span> the Hilbert transform is the principal-value
+convolution</p>
+<div class="arithmatex">\[
+\mathcal{H}[x](t) \;=\; \frac{1}{\pi}\;\mathrm{p.v.}\!\int_{-\infty}^{\infty}
+\frac{x(\tau)}{t - \tau}\,d\tau
+\]</div>
+<p>In the frequency domain the transform is a pure phase shift:</p>
+<div class="arithmatex">\[
+\mathcal{F}\{\mathcal{H}[x]\}(\omega) \;=\; -i\,\mathrm{sgn}(\omega)\;
+\mathcal{F}\{x\}(\omega)
+\]</div>
 <ul>
-<li>1 test channel + 1 reference channel → single pair <code>(1, 1)</code></li>
-<li>N test channels + 1 reference channel → all combinations
-  <code>(1, 1), (2, 1), ..., (N, 1)</code></li>
-<li>M test channels + M reference channels → pairwise <code>(1, 1), (2, 2), ...</code></li>
-<li>any other channel count → error</li>
+<li>Positive frequencies are shifted by <span class="arithmatex">\(-90°\)</span> (<span class="arithmatex">\(-i\)</span>).</li>
+<li>Negative frequencies are shifted by <span class="arithmatex">\(+90°\)</span> (<span class="arithmatex">\(+i\)</span>).</li>
+<li>DC (<span class="arithmatex">\(\omega = 0\)</span>) is zeroed.</li>
 </ul>
-<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
-<h3 id="xcorr"><code>xcorr</code><a class="headerlink" href="#xcorr" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>xcorr<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Cross-correlation per channel pair. CSV columns:
-<code>lag, value, test_channel, reference_channel</code>.</p>
-<h3 id="delay-vs-time"><code>delay-vs-time</code><a class="headerlink" href="#delay-vs-time" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-vs-time<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-r<span class="w"> </span>THRESHOLD<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Per-frame delay estimates (Mode 1). CSV columns:
-<code>time_seconds, delay, peak, reliable, test_channel, reference_channel</code>.</p>
-<h3 id="delay-from-average"><code>delay-from-average</code><a class="headerlink" href="#delay-from-average" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-from-average<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
-</code></pre></div>
-<p>Single delay from the averaged xcorr peak (Mode 2). CSV columns:
-<code>delay, test_channel, reference_channel</code>.</p>
-<h3 id="compensate-delay"><code>compensate-delay</code><a class="headerlink" href="#compensate-delay" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>compensate-delay<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-d<span class="w"> </span>MAX_DELAY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>PREFIX<span class="o">]</span>
-</code></pre></div>
-<p>Estimates the delay from the strongest xcorr peak across all channel
-pairs, then zero-pads test and reference so the pair is time-aligned
-(mirrors <code>_compensate_signals</code> in the SQA preprocessor). Writes
-<code>PREFIX_test_compensated.wav</code> and <code>PREFIX_reference_compensated.wav</code>
-(default prefix: test file without extension) and prints the applied
-delay.</p>
-<h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Short</th>
-<th>Type</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>test_file</code></td>
-<td></td>
-<td>path</td>
-<td>Test signal WAV (x), positional</td>
-</tr>
-<tr>
-<td><code>reference_file</code></td>
-<td></td>
-<td>path</td>
-<td>Reference signal WAV (y), positional</td>
-</tr>
-<tr>
-<td><code>--frame-size</code></td>
-<td><code>-f</code></td>
-<td>int ≥ 1</td>
-<td>Frame size in samples</td>
-</tr>
-<tr>
-<td><code>--hop-size</code></td>
-<td><code>-H</code></td>
-<td>int ≥ 1</td>
-<td>Hop size in samples</td>
-</tr>
-<tr>
-<td><code>--n-lags</code></td>
-<td><code>-n</code></td>
-<td>int</td>
-<td>Lag search window (± n_lags)</td>
-</tr>
-<tr>
-<td><code>--scaling</code></td>
-<td><code>-s</code></td>
-<td>enum</td>
-<td><code>normalized</code>, <code>coeff</code>, <code>biased</code>, <code>unbiased</code>, <code>none</code></td>
-</tr>
-<tr>
-<td><code>--hilbert-envelope</code></td>
-<td></td>
-<td>flag</td>
-<td>Hilbert envelope of the xcorr</td>
-</tr>
-<tr>
-<td><code>--reliability-threshold</code></td>
-<td><code>-r</code></td>
-<td>float</td>
-<td>Minimum peak for reliable frames</td>
-</tr>
-<tr>
-<td><code>--max-delay</code></td>
-<td><code>-d</code></td>
-<td>float s</td>
-<td>Delay search range for <code>compensate-delay</code></td>
-</tr>
-<tr>
-<td><code>--output-file</code></td>
-<td><code>-o</code></td>
-<td>path</td>
-<td>CSV output; honors <code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
-</tr>
-<tr>
-<td><code>--output-prefix</code></td>
-<td><code>-o</code></td>
-<td>str</td>
-<td>WAV output prefix for <code>compensate-delay</code></td>
-</tr>
-</tbody>
-</table>
-<p><code>--help</code> on any command prints the effective argument list.</p>
+<p>Applying the transform twice returns the negative original:
+<span class="arithmatex">\(\mathcal{H}\{\mathcal{H}[x]\} = -x\)</span>.</p>
+<h2 id="analytic-signal-and-envelope">Analytic signal and envelope<a class="headerlink" href="#analytic-signal-and-envelope" title="Permanent link">&para;</a></h2>
+<p>The <strong>analytic signal</strong> is the complex combination</p>
+<div class="arithmatex">\[
+x_a(t) \;=\; x(t) + i\,\mathcal{H}[x](t)
+\]</div>
+<p>Its magnitude is the <strong>instantaneous envelope</strong>:</p>
+<div class="arithmatex">\[
+|x_a(t)| \;=\; \sqrt{x(t)^2 + \mathcal{H}[x](t)^2}
+\]</div>
+<p><img alt="A sine burst, its 90° phase-shifted Hilbert transform, and the envelope" src="../../assets/images/math_hilbert.svg" /></p>
+<p><em>Blue:</em> <span class="arithmatex">\(x(t) = \sin(2\pi f_0 t)\)</span>. <em>Orange:</em> <span class="arithmatex">\(\mathcal{H}[x](t) = -\cos(2\pi f_0 t)\)</span>
+(90° lag).  <em>Green:</em> envelope <span class="arithmatex">\(|x_a(t)| = 1\)</span>, the constant amplitude of a
+pure tone.</p>
+<h2 id="envelope-of-the-cross-correlation-function">Envelope of the cross-correlation function<a class="headerlink" href="#envelope-of-the-cross-correlation-function" title="Permanent link">&para;</a></h2>
+<p>In <code>xcorr_signals</code> the envelope is computed <strong>after</strong> scaling, on the CCF
+itself, not on the raw audio. Why? The CCF of a narrow-band or oscillatory
+signal can show ringing side-lobes. The envelope collapses those side-lobes
+into a single smooth bump, giving a more robust delay estimate.</p>
+<p>The Hilbert envelope is toggled with the <code>hilbert_envelope</code> flag in both the
+Python API and the CLI.</p>
+<h2 id="ccfht-the-zero-crossing-method-hanus-2019">CCFHT — the zero-crossing method (Hanus 2019)<a class="headerlink" href="#ccfht-the-zero-crossing-method-hanus-2019" title="Permanent link">&para;</a></h2>
+<p>Hanus (2019) introduced the <strong>CCFHT</strong>: take the Hilbert transform of the
+CCF and look for the <strong>zero crossing</strong> instead of the peak.</p>
+<p>The idea is simple: because the CCF is real and even-like around its maximum,
+its Hilbert transform is an odd-like function that passes through zero at the
+exact lag of the CCF peak. A zero crossing is often easier to locate
+numerically than a noisy maximum, and Hanus showed that the CCFHT method
+yields <strong>better standard uncertainty</strong> than plain CCF for most SNR levels
+(<span class="arithmatex">\(0.01 \le \text{SNR} \le 100\)</span>). Only at extremely low SNR (<span class="arithmatex">\(\approx 0.01\)</span>)
+with very few samples (<span class="arithmatex">\(\approx 5000\)</span>) does the plain CCF win.</p>
+<p><img alt="CCF peak and CCFHT zero crossing at the same transport delay" src="../../assets/images/math_ccfht.svg" /></p>
+<p><em>Top:</em> CCF peak at <span class="arithmatex">\(\tau_0 = -120\)</span> samples. <em>Bottom:</em> CCFHT zero crossing at
+the same <span class="arithmatex">\(\tau_0 = -120\)</span> samples. The vertical dashed line marks the
+transport delay.</p>
+<h2 id="implementation-in-xcorr_signals">Implementation in xcorr_signals<a class="headerlink" href="#implementation-in-xcorr_signals" title="Permanent link">&para;</a></h2>
+<p>The crate uses the <strong>real Hilbert transform</strong> via <code>realfft</code>:</p>
+<ol>
+<li>FFT the real CCF into a half-complex spectrum.</li>
+<li>Multiply positive frequencies by <span class="arithmatex">\(-i\)</span> and negative frequencies by <span class="arithmatex">\(+i\)</span>
+   (equivalent to the <span class="arithmatex">\(-i\,\mathrm{sgn}(\omega)\)</span> filter).</li>
+<li>Inverse real FFT back to a real signal.</li>
+<li>Compute the envelope <span class="arithmatex">\(\sqrt{\text{CCF}^2 + \mathcal{H}[\text{CCF}]^2}\)</span>.</li>
+</ol>
+<p>Because the input to the Hilbert step is already the CCF (a real 1-D array),
+a real-to-complex FFT avoids the overhead of a full complex transform.</p>
+<blockquote>
+<p><strong>Note:</strong> The elephant library applies the same post-xcorr envelope (using
+<code>scipy.signal.hilbert</code>), but on the full complex analytic signal rather than
+the real-only path. The mathematical result is identical.</p>
+</blockquote>
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Wikipedia, <em>Hilbert transform</em> — <a href="https://en.wikipedia.org/wiki/Hilbert_transform">https://en.wikipedia.org/wiki/Hilbert_transform</a></li>
+<li>Hanus, R. (2019). <em>Time delay estimation of random signals using cross-correlation with Hilbert Transform</em>. Measurement, 144, 67–74.
+  DOI <a href="https://doi.org/10.1016/j.measurement.2019.07.014">10.1016/j.measurement.2019.07.014</a></li>
+<li>NeuralEnsemble/elephant <code>cross_correlation_function</code> source —
+  <a href="https://github.com/NeuralEnsemble/elephant/blob/master/elephant/signal_processing.py">https://github.com/NeuralEnsemble/elephant/blob/master/elephant/signal_processing.py</a></li>
+</ul>
 
 
 
@@ -1959,7 +1861,7 @@ delay.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../api/" class="md-footer__link md-footer__link--prev" aria-label="Previous: API reference">
+          <a href="../convolution/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Convolution">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="lucide lucide-arrow-left" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5"/></svg>
@@ -1969,20 +1871,20 @@ delay.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                API reference
+                Convolution
               </div>
             </div>
           </a>
         
         
           
-          <a href="../../contributing/" class="md-footer__link md-footer__link--next" aria-label="Next: Contributing">
+          <a href="../../architecture/overview/" class="md-footer__link md-footer__link--next" aria-label="Next: Overview">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Contributing
+                Overview
               </div>
             </div>
             <div class="md-footer__button md-icon">
