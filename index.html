@@ -85,7 +85,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cross-correlation-for-audio-signals" class="md-skip">
+        <a href="#xcorr-signals" class="md-skip">
           Skip to content
         </a>
       
@@ -1478,10 +1478,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#what-it-does" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Quick Start
+        What it does
       </span>
     </span>
   </a>
@@ -1489,22 +1489,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#installation" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Usage
+        Installation
       </span>
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Quick start
+      </span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick start">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
+  <a href="#python-api" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Running Tests
+        Python API
       </span>
     </span>
   </a>
@@ -1512,28 +1523,33 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#code-quality" class="md-nav__link">
+  <a href="#cli" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        Code Quality
+        CLI
       </span>
     </span>
   </a>
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#cli-commands" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        CLI Commands
+        Environment variables
       </span>
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1543,9 +1559,15 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#development" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Development
+      </span>
+    </span>
+  </a>
   
 </li>
       
@@ -1561,32 +1583,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ai-dev-features" class="md-nav__link">
+  <a href="#contributing" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        AI Dev-Features
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#project-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Project Structure
-      </span>
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tech-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Tech Stack
+        Contributing
       </span>
     </span>
   </a>
@@ -1654,9 +1654,10 @@
   
 
 
-<h1 id="cross-correlation-for-audio-signals">Cross-correlation for audio signals<a class="headerlink" href="#cross-correlation-for-audio-signals" title="Permanent link">&para;</a></h1>
+<h1 id="xcorr-signals">xcorr-signals<a class="headerlink" href="#xcorr-signals" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust.</p>
+<p>Fast cross-correlation for estimating and compensating time delay between
+audio signal channels. A Rust DSP core exposed through a Python API and CLI.</p>
 </blockquote>
 <!-- markdownlint-disable MD033 -->
 <p align="center">
@@ -1667,51 +1668,130 @@
 <!-- markdownlint-enable MD033 -->
 
 <hr />
-<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<h2 id="what-it-does">What it does<a class="headerlink" href="#what-it-does" title="Permanent link">&para;</a></h2>
+<p><code>xcorr-signals</code> measures the time delay between a test audio signal and a
+reference — a common task in acoustics, speech quality assessment, and
+multi-channel recording alignment. It supports:</p>
+<ul>
+<li><strong>Single-delay</strong> estimation (constant delay across the whole recording)</li>
+<li><strong>Delay-vs-time</strong> tracking (per-frame delay for drifting channels)</li>
+<li><strong>Delay compensation</strong> (zero-pad both signals to align them)</li>
+<li><strong>Multi-channel</strong> pairing: 1×1, N×1, or M×M pairwise (1-indexed)</li>
+</ul>
+<p>The heavy lifting (FFT cross-correlation, Hilbert envelope, scaling) is done
+in Rust via PyO3/NumPy bindings; the Python layer provides a CLI and
+NumPy-compatible API.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># From PyPI (recommended)</span>
+pip<span class="w"> </span>install<span class="w"> </span>xcorr-signals
+
+<span class="c1"># Or with uv</span>
+uv<span class="w"> </span>add<span class="w"> </span>xcorr-signals
+
+<span class="c1"># Or from source</span>
+uv<span class="w"> </span>sync
+uv<span class="w"> </span>run<span class="w"> </span>maturin<span class="w"> </span>develop
+</code></pre></div>
+<p>Requires <strong>Python 3.13+</strong> and a Rust toolchain (for source builds).</p>
+<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<h3 id="python-api">Python API<a class="headerlink" href="#python-api" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">xcorr_signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">xcorr</span><span class="p">,</span> <span class="n">determine_delay_from_average_py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">fs</span> <span class="o">=</span> <span class="mi">48_000</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">fs</span>  <span class="c1"># 1 second of audio</span>
+
+<span class="c1"># Create a test signal and a delayed reference</span>
+<span class="n">reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">standard_normal</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">test</span><span class="p">[</span><span class="mi">240</span><span class="p">:]</span> <span class="o">=</span> <span class="n">reference</span><span class="p">[:</span><span class="o">-</span><span class="mi">240</span><span class="p">]</span>  <span class="c1"># 5 ms delay @ 48 kHz</span>
+
+<span class="c1"># Estimate the delay</span>
+<span class="n">delay</span> <span class="o">=</span> <span class="n">determine_delay_from_average_py</span><span class="p">(</span>
+    <span class="n">test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">reference</span><span class="p">,</span>
+    <span class="n">frame_size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">hop_size</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="s2">"normalized"</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Estimated delay: </span><span class="si">{</span><span class="n">delay</span><span class="si">}</span><span class="s2"> samples (</span><span class="si">{</span><span class="n">delay</span><span class="o">/</span><span class="n">fs</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms)"</span><span class="p">)</span>
+<span class="c1"># → Estimated delay: 240 samples (5.000 ms)</span>
+</code></pre></div>
+<h3 id="cli">CLI<a class="headerlink" href="#cli" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Estimate a single delay</span>
+xcorr-signals<span class="w"> </span>delay-from-average<span class="w"> </span>test.wav<span class="w"> </span>reference.wav
+
+<span class="c1"># Track delay over time (per-frame)</span>
+xcorr-signals<span class="w"> </span>delay-vs-time<span class="w"> </span>test.wav<span class="w"> </span>reference.wav<span class="w"> </span>-f<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-H<span class="w"> </span><span class="m">2048</span><span class="w"> </span>-o<span class="w"> </span>delays.csv
+
+<span class="c1"># Cross-correlation values for every lag</span>
+xcorr-signals<span class="w"> </span>xcorr<span class="w"> </span>test.wav<span class="w"> </span>reference.wav<span class="w"> </span>-o<span class="w"> </span>xcorr.csv
+
+<span class="c1"># Compensate (align) both signals</span>
+xcorr-signals<span class="w"> </span>compensate-delay<span class="w"> </span>test.wav<span class="w"> </span>reference.wav<span class="w"> </span>-o<span class="w"> </span>aligned_
+<span class="c1"># → aligned_test_compensated.wav</span>
+<span class="c1"># → aligned_reference_compensated.wav</span>
+</code></pre></div>
+<p>All commands accept multi-channel WAV files. Channel pairing rules:</p>
+<table>
+<thead>
+<tr>
+<th>Channels</th>
+<th>Pairing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 test + 1 ref</td>
+<td>single pair <code>(1, 1)</code></td>
+</tr>
+<tr>
+<td>N test + 1 ref</td>
+<td>all combinations <code>(1,1), (2,1), … (N,1)</code></td>
+</tr>
+<tr>
+<td>M test + M ref</td>
+<td>pairwise <code>(1,1), (2,2), … (M,M)</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
+<td>Default output file for CSV commands</td>
+</tr>
+</tbody>
+</table>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>User guide</strong>: <a href="https://jr2804.github.io/xcorr-signals/guides/delay-estimation/">Delay estimation guide</a></li>
+<li><strong>Concepts</strong>: <a href="https://jr2804.github.io/xcorr-signals/concepts/cross-correlation/">Cross-correlation</a>, <a href="https://jr2804.github.io/xcorr-signals/concepts/convolution/">Convolution</a>, <a href="https://jr2804.github.io/xcorr-signals/concepts/hilbert-transform/">Hilbert transform</a></li>
+<li><strong>API reference</strong>: <a href="https://jr2804.github.io/xcorr-signals/reference/api/">Python API</a> · <a href="https://jr2804.github.io/xcorr-signals/reference/cli/">CLI reference</a></li>
+<li><strong>Full docs</strong>: <a href="https://jr2804.github.io/xcorr-signals/">https://jr2804.github.io/xcorr-signals/</a></li>
+</ul>
+<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="c1"># Clone and set up</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jr2804/xcorr-signals.git
 <span class="nb">cd</span><span class="w"> </span>xcorr-signals
-mise<span class="w"> </span>dev
-</code></pre></div>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<h3 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>mise<span class="w"> </span><span class="nb">test</span>
-<span class="c1"># or</span>
-uv<span class="w"> </span>run<span class="w"> </span>pytest
-</code></pre></div>
-<h3 id="code-quality">Code Quality<a class="headerlink" href="#code-quality" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>mise<span class="w"> </span>lint<span class="w">       </span><span class="c1"># ruff + ty + codespell</span>
-mise<span class="w"> </span>format<span class="w">     </span><span class="c1"># ruff format + isort</span>
-mise<span class="w"> </span>all<span class="w">        </span><span class="c1"># test + lint + format in one pass</span>
-</code></pre></div>
-<h3 id="cli-commands">CLI Commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>--help<span class="w">          </span><span class="c1"># show all commands</span>
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>xcorr<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav<span class="w"> </span>-o<span class="w"> </span>xcorr.csv
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>delay-vs-time<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav<span class="w"> </span>-f<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-H<span class="w"> </span><span class="m">2048</span>
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>delay-from-average<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>compensate-delay<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>--version<span class="w">   </span><span class="c1"># show version</span>
-</code></pre></div>
-<p>All commands accept multi-channel WAVs: N×1 pairs every test channel
-against the single reference, M×M pairs channels pairwise (1-indexed).</p>
-<div class="highlight"><pre><span></span><code>| Environment Variable | Description |
-|----------------------|-------------|
-| `XCORR_SIGNALS_OUTPUT_FILE` | Default output file path |
+mise<span class="w"> </span>dev<span class="w">          </span><span class="c1"># install deps + Rust toolchain</span>
 
-## Development
+<span class="c1"># Build Rust extension</span>
+mise<span class="w"> </span>run<span class="w"> </span>build-rust
 
-### Pre-commit Hooks
+<span class="c1"># Run tests + quality checks</span>
+mise<span class="w"> </span><span class="nb">test</span><span class="w">         </span><span class="c1"># pytest with coverage</span>
+mise<span class="w"> </span>lint<span class="w">         </span><span class="c1"># ruff + ty + codespell</span>
+mise<span class="w"> </span>all<span class="w">          </span><span class="c1"># test + lint + format in one pass</span>
 
-```bash
-pre-commit install
-pre-commit run --all-files
-</code></pre></div>
-<h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>mise<span class="w"> </span>docs-serve<span class="w">          </span><span class="c1"># live preview at http://localhost:8000</span>
-mise<span class="w"> </span>docs-build<span class="w">          </span><span class="c1"># build static site to site/</span>
+<span class="c1"># Documentation</span>
+mise<span class="w"> </span>docs<span class="w">         </span><span class="c1"># build static site</span>
 </code></pre></div>
 <h2 id="cicd">CI/CD<a class="headerlink" href="#cicd" title="Permanent link">&para;</a></h2>
-<p>GitHub Actions runs on every push and PR:</p>
 <table>
 <thead>
 <tr>
@@ -1723,109 +1803,21 @@ mise<span class="w"> </span>docs-build<span class="w">          </span><span cla
 <tbody>
 <tr>
 <td><strong>CI</strong> (<code>ci.yml</code>)</td>
-<td>push, PR to main</td>
-<td>test matrix (3.13, 3.14) + lint + type-check</td>
+<td>push, PR to <code>main</code></td>
+<td>test matrix (3 OS × 3 Python versions) + lint + docs</td>
 </tr>
 <tr>
 <td><strong>Release</strong> (<code>release.yml</code>)</td>
-<td>tag <code>v*</code></td>
-<td>build + publish to PyPI</td>
+<td>CalVer tag push</td>
+<td>build platform wheels + sdist, publish to PyPI</td>
 </tr>
 </tbody>
 </table>
-<h2 id="ai-dev-features">AI Dev-Features<a class="headerlink" href="#ai-dev-features" title="Permanent link">&para;</a></h2>
-<p>This project includes optional AI-agent tooling. After <code>mise dev</code>, install with:</p>
-<div class="highlight"><pre><span></span><code>mise<span class="w"> </span>run<span class="w"> </span>add-mcp-servers<span class="w"> </span>&lt;agent&gt;<span class="w">   </span><span class="c1"># register MCP servers (claude, codex, gemini, ...)</span>
-mise<span class="w"> </span>run<span class="w"> </span>add-skills<span class="w">                </span><span class="c1"># install agent skills</span>
-</code></pre></div>
-<p>Enabled dev-features are listed in <code>.config/mise/conf.d/mcp.toml</code> and
-<code>.config/mise/conf.d/skills.toml</code>.</p>
-<h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code>xcorr-signals/
-├── .config/mise/               # mise task definitions
-├── .github/workflows/          # CI + release workflows
-├── docs/                       # Zensical documentation (Diátaxis)
-├── src/xcorr_signals/     # Source package
-│   ├── __init__.py
-│   ├── __about__.py
-│   └── cli/
-│       ├── __init__.py
-│       ├── app.py
-│       ├── args.py
-│       └── commands.py
-├── tests/                      # Test suite
-├── .copier-answers.yml         # Template version tracking
-├── pyproject.toml              # uv + hatch + pytest config
-├── ruff.toml                   # Linter + formatter config
-├── ty.toml                     # Type checker config
-└── README.md
-</code></pre></div>
-<h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Tool</th>
-<th>Purpose</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Package manager</td>
-<td><a href="https://docs.astral.sh/uv/">uv</a></td>
-<td>Fast installs, deterministic lockfile</td>
-</tr>
-<tr>
-<td>Task runner</td>
-<td><a href="https://mise.jdx.dev/">mise</a></td>
-<td>DAG-based tasks, tool version management</td>
-</tr>
-<tr>
-<td>Linter + formatter</td>
-<td><a href="https://docs.astral.sh/ruff/">ruff</a></td>
-<td>Single-binary code quality</td>
-</tr>
-<tr>
-<td>Type checker</td>
-<td><a href="https://github.com/google/ty">ty</a></td>
-<td>Strict type checking</td>
-</tr>
-<tr>
-<td>Testing</td>
-<td><a href="https://pytest.org/">pytest</a></td>
-<td>Test framework with 100% coverage gate</td>
-</tr>
-<tr>
-<td>Spell check</td>
-<td><a href="https://github.com/codespell-project/codespell">codespell</a></td>
-<td>Code and doc spell checking</td>
-</tr>
-<tr>
-<td>Documentation</td>
-<td><a href="https://github.com/zensical/zensical">Zensical</a></td>
-<td>MkDocs Material with executable examples</td>
-</tr>
-<tr>
-<td>Versioning</td>
-<td><a href="https://github.com/ninoseki/uv-dynamic-versioning">uv-dynamic-versioning</a></td>
-<td>Git tag-based versioning</td>
-</tr>
-<tr>
-<td>Hooks</td>
-<td><a href="https://pre-commit.com/">pre-commit</a></td>
-<td>Automated quality gate</td>
-</tr>
-<tr>
-<td>CI/CD</td>
-<td>GitHub Actions</td>
-<td>Test matrix + PyPI release</td>
-</tr>
-</tbody>
-</table>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
+<p>See <a href="https://jr2804.github.io/xcorr-signals/contributing/">Contributing</a> and
+<a href="https://jr2804.github.io/xcorr-signals/code_of_conduct/">Code of Conduct</a>.</p>
 <h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
-<p>MIT — see <a href="LICENSE">LICENSE</a> for details.</p>
-<hr />
-<p>Generated from <a href="https://codeberg.org/jr2804/copier-uv-plus">copier-uv-plus</a>.</p>
+<p>MIT — see <a href="LICENSE">LICENSE</a>.</p>
 <hr />
 <h2 id="documentation_1">Documentation<a class="headerlink" href="#documentation_1" title="Permanent link">&para;</a></h2>
 <ul>
