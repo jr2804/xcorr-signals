@@ -1,59 +1,74 @@
-"""CLI command implementations for Cross-correlation for audio signals."""
+# SPDX-License-Identifier: MIT
+# Copyright 2026, Jan.Reimes
 
-from __future__ import annotations
+"""CLI command implementations."""
+
+from pathlib import Path
+from typing import Annotated
 
 import typer
 
-from xcorr_signals.cli import args
-from xcorr_signals.cli.app import app
+from xcorr_signals.cli.args import (
+    FrameSizeArg,
+    HopSizeArg,
+    InputFileArg,
+    NLagsArg,
+    OutputFileArg,
+    ReliabilityArg,
+    ScalingArg,
+    get_output_file,
+)
 
-# Application name for environment variables
-APP_NAME_UPPERCASE = "XCORR_SIGNALS"
 
-# Default command (runs when no command provided)
-
-@app.command()
 def default() -> None:
-    """Default command showing welcome message."""
-    typer.echo(f"Welcome to Cross-correlation for audio signals!")
-    typer.echo("Use --help to see available commands.")
+    """Welcome message."""
+    typer.secho(
+        "xcorr-signals — fast cross-correlation delay estimation (Rust core)",
+        fg=typer.colors.CYAN,
+    )
 
-# Greet command
 
-@app.command()
-def greet(
-    name: args.NameArg,
-    input_file: args.InputFileArg = None,
-    output_file: args.OutputFile = None,
-    cache: args.Cache = True,
+def xcorr_cmd() -> None:
+    """Cross-correlation of two signals (stub until WAV I/O lands)."""
+    typer.secho(
+        "xcorr-cmd: WAV I/O pending; use xcorr_signals.xcorr from Python",
+        fg=typer.colors.YELLOW,
+    )
+    raise typer.Exit(code=2)
+
+
+def delay_vs_time(
+    input_file: Annotated[Path, InputFileArg],
+    frame_size: Annotated[int, FrameSizeArg],
+    hop_size: Annotated[int, HopSizeArg],
+    n_lags: Annotated[int | None, NLagsArg],
+    scaling: Annotated[str, ScalingArg],
+    reliability_threshold: Annotated[float, ReliabilityArg],
+    output_file: Annotated[Path | None, OutputFileArg],
 ) -> None:
-    """Greet a person by name."""
-    if input_file:
-        # Read names from file
-        names = [line.strip() for line in input_file if line.strip()]
-        for n in names:
-            typer.echo(f"Hello, {n}!")
-    else:
-        typer.echo(f"Hello, {name}!")
+    """Per-frame delay estimates with reliability filtering (stub)."""
+    out = get_output_file(output_file)
+    typer.secho(
+        f"delay-vs-time: WAV I/O pending ({input_file}, frame={frame_size}, "
+        f"hop={hop_size}, n_lags={n_lags}, scaling={scaling}, "
+        f"reliability={reliability_threshold}, out={out})",
+        fg=typer.colors.YELLOW,
+    )
+    raise typer.Exit(code=2)
 
-    # Show option values (for demonstration)
-    if output_file:
-        typer.echo(f"Output file: {output_file}")
-    typer.echo(f"Cache: {'enabled' if cache else 'disabled'}")
 
-# Add command
-
-@app.command()
-def add(
-    number1: args.NumberArg1,
-    number2: args.NumberArg2,
-    output_file: args.OutputFile = None,
+def delay_from_average(
+    input_file: Annotated[Path, InputFileArg],
+    frame_size: Annotated[int, FrameSizeArg],
+    hop_size: Annotated[int, HopSizeArg],
+    n_lags: Annotated[int | None, NLagsArg],
+    scaling: Annotated[str, ScalingArg],
+    output_file: Annotated[Path | None, OutputFileArg],
 ) -> None:
-    """Add two numbers together."""
-    result = number1 + number2
-    typer.echo(f"The sum of {number1} and {number2} is {result}")
-
-    if output_file:
-        with open(output_file, "w") as f:
-            f.write(str(result))
-        typer.echo(f"Result written to {output_file}")
+    """Single delay from the averaged xcorr peak (stub)."""
+    out = get_output_file(output_file)
+    typer.secho(
+        f"delay-from-average: WAV I/O pending ({input_file}, frame={frame_size}, hop={hop_size}, n_lags={n_lags}, scaling={scaling}, out={out})",
+        fg=typer.colors.YELLOW,
+    )
+    raise typer.Exit(code=2)

@@ -1,10 +1,16 @@
-"""xcorr_signals package."""
+# SPDX-License-Identifier: MIT
+# Copyright 2026, Jan.Reimes
 
-from __future__ import annotations
+"""Fast cross-correlation for audio delay estimation, with a Rust core."""
 
-import importlib.metadata
+from xcorr_signals._native import (
+    determine_delay_from_average_py,
+    determine_delay_vs_time_py,
+    xcorr,
+)
 
-try:
-    __version__ = importlib.metadata.version(__name__)
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.0.0"  # Fallback for development mode
+__all__ = [
+    "determine_delay_from_average_py",
+    "determine_delay_vs_time_py",
+    "xcorr",
+]

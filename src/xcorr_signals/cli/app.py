@@ -1,46 +1,55 @@
-"""Typer CLI app for Cross-correlation for audio signals."""
+# SPDX-License-Identifier: MIT
+# Copyright 2026, Jan.Reimes
 
-from __future__ import annotations
+"""Typer application for xcorr-signals."""
 
-from importlib.metadata import version
+from importlib import metadata
+from typing import Annotated
 
 import typer
 
-# Version management
-def _get_version() -> str:
-    """Get application version from package metadata."""
-    try:
-        return version("xcorr_signals")
-    except Exception:
-        return "0.0.0"  # Fallback for development mode
+from xcorr_signals.cli import commands
 
 app = typer.Typer(
-    name="xcorr_signals",
-    help="Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust.",
-    add_completion=True,
+    name="xcorr-signals",
+    help="Fast cross-correlation for audio delay estimation (Rust core).",
     no_args_is_help=True,
+    add_completion=False,
 )
 
-@app.callback(invoke_without_command=True)
-def _callback(
-    version: bool = typer.Option(
-        False,
-        "--version",
-        "-v",
-        help="Show version and exit",
-        is_eager=True,
-    ),
+try:
+    _version = metadata.version("xcorr-signals")
+except metadata.PackageNotFoundError:  # pragma: no cover
+    _version = "0.0.0"
+
+
+@app.callback()
+def main(
+    version: Annotated[
+        bool,
+        typer.Option(
+            "--version",
+            "-v",
+            help="Show the version and exit.",
+            is_eager=True,
+        ),
+    ] = False,
 ) -> None:
-    """Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust."""
+    """Cross-correlation delay estimation with a Rust core."""
     if version:
-        typer.echo(_get_version())
-        raise typer.Exit()
+        typer.echo(f"xcorr-signals {_version}")
+        raise typer.Exit
 
 
-def main() -> None:
-    """Entry point for the CLI application."""
+app.command()(commands.default)
+app.command(name="xcorr-cmd")(commands.xcorr_cmd)
+app.command(name="delay-vs-time")(commands.delay_vs_time)
+app.command(name="delay-from-average")(commands.delay_from_average)
+
+
+def cli() -> None:
     app()
 
 
-# Import commands to register them with app
-from xcorr_signals.cli import commands  # noqa: E402, F401
+if __name__ == "__main__":
+    cli()
