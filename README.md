@@ -42,15 +42,13 @@ mise all        # test + lint + format in one pass
 ### CLI Commands
 
 ```bash
-uv run xcorr_signals                  # default command
-uv run xcorr_signals greet Alice      # greet someone
-uv run xcorr_signals add 5 3          # add numbers
-uv run xcorr_signals --version        # show version
+uv run xcorr_signals              # default command
+uv run xcorr_signals delay-from-average FILE.wav --help   # stub until WAV I/O
+uv run xcorr_signals --version   # show version
 ```
 
 | Environment Variable | Description |
 |----------------------|-------------|
-| `XCORR_SIGNALS_CACHE` | Enable/disable caching (true/false) |
 | `XCORR_SIGNALS_OUTPUT_FILE` | Default output file path |
 
 ## Development
@@ -96,7 +94,7 @@ Enabled dev-features are listed in `.config/mise/conf.d/mcp.toml` and
 xcorr-signals/
 ├── .config/mise/               # mise task definitions
 ├── .github/workflows/          # CI + release workflows
-├── docs/                       # MkDocs documentation
+├── docs/                       # Zensical documentation (Diátaxis)
 ├── src/xcorr_signals/     # Source package
 │   ├── __init__.py
 │   ├── __about__.py

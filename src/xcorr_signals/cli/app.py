@@ -13,7 +13,6 @@ from xcorr_signals.cli import commands
 app = typer.Typer(
     name="xcorr-signals",
     help="Fast cross-correlation for audio delay estimation (Rust core).",
-    no_args_is_help=True,
     add_completion=False,
 )
 
@@ -23,8 +22,9 @@ except metadata.PackageNotFoundError:  # pragma: no cover
     _version = "0.0.0"
 
 
-@app.callback()
+@app.callback(invoke_without_command=True)
 def main(
+    ctx: typer.Context,
     version: Annotated[
         bool,
         typer.Option(
@@ -38,6 +38,9 @@ def main(
     """Cross-correlation delay estimation with a Rust core."""
     if version:
         typer.echo(f"xcorr-signals {_version}")
+        raise typer.Exit
+    if ctx.invoked_subcommand is None:
+        typer.echo(ctx.get_help())
         raise typer.Exit
 
 

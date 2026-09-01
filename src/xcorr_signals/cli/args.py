@@ -1,12 +1,17 @@
 # SPDX-License-Identifier: MIT
 # Copyright 2026, Jan.Reimes
 
-"""CLI argument definitions."""
+"""CLI argument definitions (Annotated-style OptionInfo)."""
 
-import os
 from pathlib import Path
 
 import typer
+
+# NOTE: options below carry only their parameter info — no positional
+# default. Typer's Annotated extraction prepends an OptionInfo's `default`
+# to its param_decls; a positional default like Option(7200, ...) then
+# lands inside the decls and crashes. Defaults live in the command
+# signatures in commands.py.
 
 InputFileArg = typer.Argument(
     help="Input WAV file",
@@ -16,7 +21,6 @@ InputFileArg = typer.Argument(
 )
 
 FrameSizeArg = typer.Option(
-    7200,
     "--frame-size",
     "-f",
     help="Frame size in samples",
@@ -24,7 +28,6 @@ FrameSizeArg = typer.Option(
 )
 
 HopSizeArg = typer.Option(
-    7200,
     "--hop-size",
     "-H",
     help="Hop size in samples",
@@ -32,7 +35,6 @@ HopSizeArg = typer.Option(
 )
 
 NLagsArg = typer.Option(
-    None,
     "--n-lags",
     "-n",
     help="Lag search window (+/- n_lags); full range if omitted",
@@ -40,7 +42,6 @@ NLagsArg = typer.Option(
 )
 
 ScalingArg = typer.Option(
-    "normalized",
     "--scaling",
     "-s",
     help="xcorr scaling mode",
@@ -48,7 +49,6 @@ ScalingArg = typer.Option(
 )
 
 ReliabilityArg = typer.Option(
-    0.5,
     "--reliability-threshold",
     "-r",
     help="Minimum peak value for a frame to count as reliable",
@@ -57,18 +57,10 @@ ReliabilityArg = typer.Option(
 )
 
 OutputFileArg = typer.Option(
-    None,
     "--output-file",
     "-o",
-    help="Output file path (defaults to XCORR_SIGNALS_OUTPUT_FILE or stdout)",
+    help="Output file path (defaults to XCORR_SIGNALS_OUTPUT_FILE env var or stdout)",
+    envvar="XCORR_SIGNALS_OUTPUT_FILE",
 )
 
-EnvVarOutputFile = Path
-
-
-def get_output_file(output_file: OutputFileArg) -> Path | None:
-
-    if output_file is not None:
-        return output_file
-    env = os.environ.get("XCORR_SIGNALS_OUTPUT_FILE")
-    return Path(env) if env else None
+Path_ = Path

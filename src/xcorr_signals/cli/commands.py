@@ -16,7 +16,6 @@ from xcorr_signals.cli.args import (
     OutputFileArg,
     ReliabilityArg,
     ScalingArg,
-    get_output_file,
 )
 
 
@@ -39,19 +38,18 @@ def xcorr_cmd() -> None:
 
 def delay_vs_time(
     input_file: Annotated[Path, InputFileArg],
-    frame_size: Annotated[int, FrameSizeArg],
-    hop_size: Annotated[int, HopSizeArg],
-    n_lags: Annotated[int | None, NLagsArg],
-    scaling: Annotated[str, ScalingArg],
-    reliability_threshold: Annotated[float, ReliabilityArg],
-    output_file: Annotated[Path | None, OutputFileArg],
+    frame_size: Annotated[int, FrameSizeArg] = 7200,
+    hop_size: Annotated[int, HopSizeArg] = 7200,
+    n_lags: Annotated[int | None, NLagsArg] = None,
+    scaling: Annotated[str, ScalingArg] = "normalized",
+    reliability_threshold: Annotated[float, ReliabilityArg] = 0.5,
+    output_file: Annotated[Path | None, OutputFileArg] = None,
 ) -> None:
     """Per-frame delay estimates with reliability filtering (stub)."""
-    out = get_output_file(output_file)
     typer.secho(
         f"delay-vs-time: WAV I/O pending ({input_file}, frame={frame_size}, "
         f"hop={hop_size}, n_lags={n_lags}, scaling={scaling}, "
-        f"reliability={reliability_threshold}, out={out})",
+        f"reliability={reliability_threshold}, out={output_file})",
         fg=typer.colors.YELLOW,
     )
     raise typer.Exit(code=2)
@@ -59,16 +57,15 @@ def delay_vs_time(
 
 def delay_from_average(
     input_file: Annotated[Path, InputFileArg],
-    frame_size: Annotated[int, FrameSizeArg],
-    hop_size: Annotated[int, HopSizeArg],
-    n_lags: Annotated[int | None, NLagsArg],
-    scaling: Annotated[str, ScalingArg],
-    output_file: Annotated[Path | None, OutputFileArg],
+    frame_size: Annotated[int, FrameSizeArg] = 7200,
+    hop_size: Annotated[int, HopSizeArg] = 7200,
+    n_lags: Annotated[int | None, NLagsArg] = None,
+    scaling: Annotated[str, ScalingArg] = "normalized",
+    output_file: Annotated[Path | None, OutputFileArg] = None,
 ) -> None:
     """Single delay from the averaged xcorr peak (stub)."""
-    out = get_output_file(output_file)
     typer.secho(
-        f"delay-from-average: WAV I/O pending ({input_file}, frame={frame_size}, hop={hop_size}, n_lags={n_lags}, scaling={scaling}, out={out})",
+        f"delay-from-average: WAV I/O pending ({input_file}, frame={frame_size}, hop={hop_size}, n_lags={n_lags}, scaling={scaling}, out={output_file})",
         fg=typer.colors.YELLOW,
     )
     raise typer.Exit(code=2)

@@ -20,8 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-xcorr-signals = "xcorr_signals.cli.app:main"
-xcorr_signals = "xcorr_signals.cli.app:main"
+xcorr-signals = "xcorr_signals.cli.app:cli"
 
 [dependency-groups]
 dev = [

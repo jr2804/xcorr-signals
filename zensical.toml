@@ -12,7 +12,25 @@ nav = [
     { "Credits" = "credits.md" },
     { "License" = "license.md" },
   ] },
+  { "Getting Started" = [
+    { "Quickstart" = "getting-started/quickstart.md" },
+  ] },
+  { "Guides" = [
+    { "Delay Estimation" = "guides/delay-estimation.md" },
+  ] },
+  { "Examples" = [
+    { "XCorr Examples" = "examples/index.md" },
+  ] },
+  { "Architecture" = [
+    { "Overview" = "architecture/overview.md" },
+    { "Decisions (ADRs)" = [
+      { "0001 Rust Core with PyO3" = "architecture/decisions/0001-rust-core-pyo3.md" },
+      { "0002 Float32 Input, f64 Computation" = "architecture/decisions/0002-float32-f64-boundary.md" },
+      { "0003 Real Hilbert Envelope via realfft" = "architecture/decisions/0003-real-hilbert-realfft.md" },
+    ] },
+  ] },
   { "API reference" = "reference/api.md" },
+  { "CLI reference" = "reference/cli.md" },
   { "Development" = [
     { "Contributing" = "contributing.md" },
     { "Code of Conduct" = "code_of_conduct.md" },
@@ -124,6 +142,9 @@ emoji_index = "zensical.extensions.emoji.twemoji"
 [project.markdown_extensions.pymdownx.snippets]
 check_paths = true
 [project.markdown_extensions.pymdownx.superfences]
+[[project.markdown_extensions.pymdownx.superfences.custom_fences]]
+name = "mermaid"
+class = "mermaid"
 [[project.markdown_extensions.pymdownx.superfences.custom_fences]]
 name = "python"
 class = "python"
