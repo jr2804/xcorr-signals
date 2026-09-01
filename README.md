@@ -42,10 +42,18 @@ mise all        # test + lint + format in one pass
 ### CLI Commands
 
 ```bash
-uv run xcorr_signals              # default command
-uv run xcorr_signals delay-from-average FILE.wav --help   # stub until WAV I/O
+uv run xcorr_signals --help          # show all commands
+uv run xcorr_signals xcorr TEST.wav REF.wav -o xcorr.csv
+uv run xcorr_signals delay-vs-time TEST.wav REF.wav -f 4096 -H 2048
+uv run xcorr_signals delay-from-average TEST.wav REF.wav
+uv run xcorr_signals compensate-delay TEST.wav REF.wav
 uv run xcorr_signals --version   # show version
 ```
+
+All commands accept multi-channel WAVs: N×1 pairs every test channel
+against the single reference, M×M pairs channels pairwise (1-indexed).
+
+```text
 
 | Environment Variable | Description |
 |----------------------|-------------|

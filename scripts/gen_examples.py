@@ -28,6 +28,45 @@ B_JITTER_S = 0.030  # +/- 30 ms jitter
 B_LAG_WINDOW_S = 0.040  # +/- 40 ms lag window
 
 
+def main() -> None:
+    style()
+    OUT.mkdir(parents=True, exist_ok=True)
+
+    # --- Scenario A: single burst, average xcorr --------------------------
+    n_a = int(A_BURST_S * FS)
+    clean = burst(n_a, seed=42)
+    delay_a = int(A_DELAY_S * FS)
+    ref_a = clean
+    test_a = np.roll(degrade(clean, snr_db=25.0, seed=43), delay_a)
+    fig_signal(ref_a, test_a, delay_a)
+    fig_xcorr_average(ref_a, test_a, A_DELAY_S)
+
+    # --- Scenario B: 20 jittered segments, xcorr vs time + percentiles ----
+    ref_b, test_b, true_ms, _snr = scenario_b()
+    fig_xcorr_vs_time(ref_b, test_b, three_d=False)
+    fig_xcorr_vs_time(ref_b, test_b, three_d=True)
+
+    seg_len = int((B_LEAD_S + B_BURST_S + B_TAIL_S) * FS)
+    n_lags = int(B_LAG_WINDOW_S * FS)
+    result = determine_delay_vs_time_py(
+        test_b.reshape(-1, 1),
+        ref_b,
+        seg_len,
+        seg_len,
+        n_lags=n_lags,
+        scaling="normalized",
+        reliability_threshold=0.3,
+    )
+    est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames])
+    peaks = np.array([f.peak_value for f in result.frames])
+    stats = fig_delay_percentiles(true_ms, est_ms, peaks)
+
+    print("figures written to", OUT)
+    print("reliable frames:", len(result.reliable_indices), "/", len(result.frames))
+    print("error ms: P5={p5:+.3f} P50={p50:+.3f} P95={p95:+.3f} max|e|={max_abs:.3f}".format(**stats))
+    print(f"peak: {peaks.min():.3f} .. {peaks.max():.3f} (P5={np.percentile(peaks, 5):.3f} P95={np.percentile(peaks, 95):.3f})")
+
+
 def style() -> None:
     plt.rcParams.update(
         {
@@ -41,35 +80,6 @@ def style() -> None:
             "axes.spines.right": False,
         }
     )
-
-
-def burst(n: int, seed: int) -> np.ndarray:
-    """White-noise burst windowed by a raised cosine."""
-    rng = np.random.default_rng(seed)
-    raw = rng.standard_normal(n)
-    win = np.hanning(n) ** 0.8
-    return raw * win
-
-
-def degrade(sig: np.ndarray, snr_db: float, seed: int) -> np.ndarray:
-    """Soft-clip distortion + additive noise at snr_db SNR."""
-    rng = np.random.default_rng(seed)
-    drive = 5.0
-    distorted = np.tanh(drive * sig) / np.tanh(drive)
-    mix = 0.85 * distorted + 0.15 * sig
-
-    power = np.mean(mix**2)
-    noise_power = power / (10 ** (snr_db / 10))
-    noise = rng.standard_normal(mix.size) * np.sqrt(noise_power)
-    return mix + noise
-
-
-def fir_lowpass(sig: np.ndarray, fc: float, taps: int) -> np.ndarray:
-    """Linear-phase windowed-sinc FIR lowpass (codec / anti-aliasing model)."""
-    m = np.arange(taps) - (taps - 1) / 2
-    h = np.sinc(2 * fc / FS * m) * np.hamming(taps)
-    h /= h.sum()
-    return np.convolve(sig, h)[: sig.size]
 
 
 def fig_signal(ref: np.ndarray, test: np.ndarray, delay: int) -> None:
@@ -209,43 +219,33 @@ def scenario_b() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     )
 
 
-def main() -> None:
-    style()
-    OUT.mkdir(parents=True, exist_ok=True)
+def burst(n: int, seed: int) -> np.ndarray:
+    """White-noise burst windowed by a raised cosine."""
+    rng = np.random.default_rng(seed)
+    raw = rng.standard_normal(n)
+    win = np.hanning(n) ** 0.8
+    return raw * win
 
-    # --- Scenario A: single burst, average xcorr --------------------------
-    n_a = int(A_BURST_S * FS)
-    clean = burst(n_a, seed=42)
-    delay_a = int(A_DELAY_S * FS)
-    ref_a = clean
-    test_a = np.roll(degrade(clean, snr_db=25.0, seed=43), delay_a)
-    fig_signal(ref_a, test_a, delay_a)
-    fig_xcorr_average(ref_a, test_a, A_DELAY_S)
 
-    # --- Scenario B: 20 jittered segments, xcorr vs time + percentiles ----
-    ref_b, test_b, true_ms, _snr = scenario_b()
-    fig_xcorr_vs_time(ref_b, test_b, three_d=False)
-    fig_xcorr_vs_time(ref_b, test_b, three_d=True)
+def degrade(sig: np.ndarray, snr_db: float, seed: int) -> np.ndarray:
+    """Soft-clip distortion + additive noise at snr_db SNR."""
+    rng = np.random.default_rng(seed)
+    drive = 5.0
+    distorted = np.tanh(drive * sig) / np.tanh(drive)
+    mix = 0.85 * distorted + 0.15 * sig
 
-    seg_len = int((B_LEAD_S + B_BURST_S + B_TAIL_S) * FS)
-    n_lags = int(B_LAG_WINDOW_S * FS)
-    result = determine_delay_vs_time_py(
-        test_b.reshape(-1, 1),
-        ref_b,
-        seg_len,
-        seg_len,
-        n_lags=n_lags,
-        scaling="normalized",
-        reliability_threshold=0.3,
-    )
-    est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames])
-    peaks = np.array([f.peak_value for f in result.frames])
-    stats = fig_delay_percentiles(true_ms, est_ms, peaks)
+    power = np.mean(mix**2)
+    noise_power = power / (10 ** (snr_db / 10))
+    noise = rng.standard_normal(mix.size) * np.sqrt(noise_power)
+    return mix + noise
 
-    print("figures written to", OUT)
-    print("reliable frames:", len(result.reliable_indices), "/", len(result.frames))
-    print("error ms: P5={p5:+.3f} P50={p50:+.3f} P95={p95:+.3f} max|e|={max_abs:.3f}".format(**stats))
-    print(f"peak: {peaks.min():.3f} .. {peaks.max():.3f} (P5={np.percentile(peaks, 5):.3f} P95={np.percentile(peaks, 95):.3f})")
+
+def fir_lowpass(sig: np.ndarray, fc: float, taps: int) -> np.ndarray:
+    """Linear-phase windowed-sinc FIR lowpass (codec / anti-aliasing model)."""
+    m = np.arange(taps) - (taps - 1) / 2
+    h = np.sinc(2 * fc / FS * m) * np.hamming(taps)
+    h /= h.sum()
+    return np.convolve(sig, h)[: sig.size]
 
 
 if __name__ == "__main__":

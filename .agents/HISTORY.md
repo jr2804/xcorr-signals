@@ -26,3 +26,4 @@ Acts as simple long-term memory for the project.
 - Keep entries brief — enough to reconstruct reasoning.
 - When this file grows too large, archive older entries to
   `.agents/history/` and leave a pointer here.
+| 2026-08-31 | CLI reconsolidated into 3-step pipeline: `xcorr` (Step 1), `delay-vs-time` + `delay-from-average` (Step 2), `compensate-delay` (Step 3); WAV I/O via stdlib RIFF parser `wavio.py` (stdlib `wave` rejects float32 fmt 3); channel pairing `channels.channel_pairs`: 1x1, Nx1 all combos, MxM pairwise, 1-indexed | Matches system model x(k) -> h(k-k0) -> y(k): each command emits per-pair results; compensate mirrors SQA `_compensate_signals` (global best peak -> zero-pad both) | (uncommitted) |

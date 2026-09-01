@@ -74,5 +74,7 @@ always float64.
 | ------ | -------------- |
 | `src/xcorr_signals/src/xcorr.rs` | Correlation, scaling, Hilbert envelope, delay modes, unit tests |
 | `src/xcorr_signals/src/pyo3_bindings.rs` | NumPy conversion, scaling parsing, `#[pyclass]` result types |
-| `src/xcorr_signals/cli/` | Typer app, argument definitions, command stubs |
+| `src/xcorr_signals/cli/` | Typer app, argument definitions, pipeline commands (xcorr, delay-vs-time, delay-from-average, compensate-delay) |
+| `src/xcorr_signals/wavio.py` | WAV read/write (PCM + IEEE float) |
+| `src/xcorr_signals/channels.py` | Channel pairing rules (N×1, M×M) |
 | `scripts/gen_examples.py` | Deterministic example figures for these docs |

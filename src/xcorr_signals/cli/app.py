@@ -12,7 +12,7 @@ from xcorr_signals.cli import commands
 
 app = typer.Typer(
     name="xcorr-signals",
-    help="Fast cross-correlation for audio delay estimation (Rust core).",
+    help="Cross-correlation, delay estimation and delay compensation (Rust core).",
     add_completion=False,
 )
 
@@ -44,10 +44,10 @@ def main(
         raise typer.Exit
 
 
-app.command()(commands.default)
-app.command(name="xcorr-cmd")(commands.xcorr_cmd)
+app.command(name="xcorr")(commands.xcorr_cmd)
 app.command(name="delay-vs-time")(commands.delay_vs_time)
 app.command(name="delay-from-average")(commands.delay_from_average)
+app.command(name="compensate-delay")(commands.compensate_delay)
 
 
 def cli() -> None:

@@ -55,14 +55,14 @@ ignore = [
     "ANN401",
     "PLR0912",  # too-many-branches
     "PLR0913",
-    "PLR0917", # too-many-positional-arguments (Typer command signatures)
+    "PLR0917",  # too-many-positional (Typer CLI signatures)
     "PLR2004", # magic value used in comparison
     "PT028",   # test function parameter has default argument
 ]
 
 [lint.per-file-ignores]
 # Use of assert statements in tests is pytest default behavior
-"tests/**/*.py" = ["S101"]
+"tests/**/*.py" = ["S101", "PLR6301", "ANN001", "ANN201"]
 
 [lint.pylint]
 max-locals = 20
