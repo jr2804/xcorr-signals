@@ -1340,34 +1340,6 @@
   
 </li>
         
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#development" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Development
-      </span>
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Development">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pre-commit-hooks" class="md-nav__link">
-    <span class="md-ellipsis">
-      <span class="md-typeset">
-        Pre-commit Hooks
-      </span>
-    </span>
-  </a>
-  
-</li>
-        
           <li class="md-nav__item">
   <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
@@ -1520,28 +1492,26 @@ mise<span class="w"> </span>format<span class="w">     </span><span class="c1">#
 mise<span class="w"> </span>all<span class="w">        </span><span class="c1"># test + lint + format in one pass</span>
 </code></pre></div>
 <h3 id="cli-commands">CLI Commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w">              </span><span class="c1"># default command</span>
-uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>delay-from-average<span class="w"> </span>FILE.wav<span class="w"> </span>--help<span class="w">   </span><span class="c1"># stub until WAV I/O</span>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>--help<span class="w">          </span><span class="c1"># show all commands</span>
+uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>xcorr<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav<span class="w"> </span>-o<span class="w"> </span>xcorr.csv
+uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>delay-vs-time<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav<span class="w"> </span>-f<span class="w"> </span><span class="m">4096</span><span class="w"> </span>-H<span class="w"> </span><span class="m">2048</span>
+uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>delay-from-average<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav
+uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>compensate-delay<span class="w"> </span>TEST.wav<span class="w"> </span>REF.wav
 uv<span class="w"> </span>run<span class="w"> </span>xcorr_signals<span class="w"> </span>--version<span class="w">   </span><span class="c1"># show version</span>
 </code></pre></div>
-<table>
-<thead>
-<tr>
-<th>Environment Variable</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
-<td>Default output file path</td>
-</tr>
-</tbody>
-</table>
-<h2 id="development">Development<a class="headerlink" href="#development" title="Permanent link">&para;</a></h2>
-<h3 id="pre-commit-hooks">Pre-commit Hooks<a class="headerlink" href="#pre-commit-hooks" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code>pre-commit<span class="w"> </span>install
-pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+<p>All commands accept multi-channel WAVs: N×1 pairs every test channel
+against the single reference, M×M pairs channels pairwise (1-indexed).</p>
+<div class="highlight"><pre><span></span><code>| Environment Variable | Description |
+|----------------------|-------------|
+| `XCORR_SIGNALS_OUTPUT_FILE` | Default output file path |
+
+## Development
+
+### Pre-commit Hooks
+
+```bash
+pre-commit install
+pre-commit run --all-files
 </code></pre></div>
 <h3 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code>mise<span class="w"> </span>docs-serve<span class="w">          </span><span class="c1"># live preview at http://localhost:8000</span>

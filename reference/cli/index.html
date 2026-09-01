@@ -87,7 +87,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#commands" class="md-skip">
+        <a href="#channel-pairing" class="md-skip">
           Skip to content
         </a>
       
@@ -1156,6 +1156,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#channel-pairing" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Channel pairing
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#commands" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1163,6 +1174,56 @@
       </span>
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xcorr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>xcorr</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delay-vs-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>delay-vs-time</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delay-from-average" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>delay-from-average</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compensate-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>compensate-delay</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1339,6 +1400,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#channel-pairing" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Channel pairing
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#commands" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -1346,6 +1418,56 @@
       </span>
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xcorr" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>xcorr</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delay-vs-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>delay-vs-time</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delay-from-average" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>delay-from-average</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compensate-delay" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code>compensate-delay</code>
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1399,44 +1521,78 @@
 
   <h1 id="__skip">CLI Reference</h1>
 
-<p>Entry point <code>xcorr-signals</code> (<code>xcorr_signals.cli.app:main</code>). Global option
+<p>Entry point <code>xcorr-signals</code> (<code>xcorr_signals.cli.app:cli</code>). Global option
 <code>--version</code> / <code>-v</code> prints the package version.</p>
-<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
+<p>The CLI covers the pipeline
+<strong>cross-correlation → estimate delay → compensate delay</strong>:</p>
 <table>
 <thead>
 <tr>
 <th>Command</th>
-<th>Purpose</th>
-<th>Status</th>
+<th>Pipeline step</th>
+<th>Output</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>default</code></td>
-<td>Welcome message</td>
-<td>Implemented</td>
-</tr>
-<tr>
-<td><code>xcorr-cmd</code></td>
-<td>Cross-correlation of two signals</td>
-<td>Stub</td>
+<td><code>xcorr</code></td>
+<td>1. Cross-correlation lags/values</td>
+<td>CSV per (lag, value, channel pair)</td>
 </tr>
 <tr>
 <td><code>delay-vs-time</code></td>
-<td>Mode 1: per-frame delays with reliability filtering</td>
-<td>Stub</td>
+<td>2a. Per-frame delay estimates</td>
+<td>CSV per (time, delay, peak, reliability)</td>
 </tr>
 <tr>
 <td><code>delay-from-average</code></td>
-<td>Mode 2: single delay from averaged xcorr peak</td>
-<td>Stub</td>
+<td>2b. Single delay from averaged peak</td>
+<td>CSV per (delay, channel pair)</td>
+</tr>
+<tr>
+<td><code>compensate-delay</code></td>
+<td>3. Zero-pad test + reference to align</td>
+<td>2 WAV files + delay summary</td>
 </tr>
 </tbody>
 </table>
-<p>Stub commands parse their arguments and print the intended computation; WAV
-I/O and core wiring are pending (see the Python API for working equivalents).</p>
+<h2 id="channel-pairing">Channel pairing<a class="headerlink" href="#channel-pairing" title="Permanent link">&para;</a></h2>
+<p>Every analysis command takes a test WAV (x) and a reference WAV (y) and
+applies the pairing rule of <code>xcorr_signals.channels.channel_pairs</code>
+(1-indexed channels):</p>
+<ul>
+<li>1 test channel + 1 reference channel → single pair <code>(1, 1)</code></li>
+<li>N test channels + 1 reference channel → all combinations
+  <code>(1, 1), (2, 1), ..., (N, 1)</code></li>
+<li>M test channels + M reference channels → pairwise <code>(1, 1), (2, 2), ...</code></li>
+<li>any other channel count → error</li>
+</ul>
+<h2 id="commands">Commands<a class="headerlink" href="#commands" title="Permanent link">&para;</a></h2>
+<h3 id="xcorr"><code>xcorr</code><a class="headerlink" href="#xcorr" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>xcorr<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
+</code></pre></div>
+<p>Cross-correlation per channel pair. CSV columns:
+<code>lag, value, test_channel, reference_channel</code>.</p>
+<h3 id="delay-vs-time"><code>delay-vs-time</code><a class="headerlink" href="#delay-vs-time" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-vs-time<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-r<span class="w"> </span>THRESHOLD<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
+</code></pre></div>
+<p>Per-frame delay estimates (Mode 1). CSV columns:
+<code>time_seconds, delay, peak, reliable, test_channel, reference_channel</code>.</p>
+<h3 id="delay-from-average"><code>delay-from-average</code><a class="headerlink" href="#delay-from-average" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>delay-from-average<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-f<span class="w"> </span>FRAME<span class="o">]</span><span class="w"> </span><span class="o">[</span>-H<span class="w"> </span>HOP<span class="o">]</span><span class="w"> </span><span class="o">[</span>--hilbert-envelope<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>OUT.csv<span class="o">]</span>
+</code></pre></div>
+<p>Single delay from the averaged xcorr peak (Mode 2). CSV columns:
+<code>delay, test_channel, reference_channel</code>.</p>
+<h3 id="compensate-delay"><code>compensate-delay</code><a class="headerlink" href="#compensate-delay" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>xcorr-signals<span class="w"> </span>compensate-delay<span class="w"> </span>TEST.wav<span class="w"> </span>REFERENCE.wav<span class="w"> </span><span class="o">[</span>-d<span class="w"> </span>MAX_DELAY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-n<span class="w"> </span>LAGS<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>scaling<span class="o">]</span><span class="w"> </span><span class="o">[</span>-o<span class="w"> </span>PREFIX<span class="o">]</span>
+</code></pre></div>
+<p>Estimates the delay from the strongest xcorr peak across all channel
+pairs, then zero-pads test and reference so the pair is time-aligned
+(mirrors <code>_compensate_signals</code> in the SQA preprocessor). Writes
+<code>PREFIX_test_compensated.wav</code> and <code>PREFIX_reference_compensated.wav</code>
+(default prefix: test file without extension) and prints the applied
+delay.</p>
 <h2 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h2>
-<p>Options shared by the analysis commands:</p>
 <table>
 <thead>
 <tr>
@@ -1448,10 +1604,16 @@ I/O and core wiring are pending (see the Python API for working equivalents).</p
 </thead>
 <tbody>
 <tr>
-<td><code>--input-file</code></td>
+<td><code>test_file</code></td>
 <td></td>
 <td>path</td>
-<td>Input WAV file (positional argument)</td>
+<td>Test signal WAV (x), positional</td>
+</tr>
+<tr>
+<td><code>reference_file</code></td>
+<td></td>
+<td>path</td>
+<td>Reference signal WAV (y), positional</td>
 </tr>
 <tr>
 <td><code>--frame-size</code></td>
@@ -1478,16 +1640,34 @@ I/O and core wiring are pending (see the Python API for working equivalents).</p
 <td><code>normalized</code>, <code>coeff</code>, <code>biased</code>, <code>unbiased</code>, <code>none</code></td>
 </tr>
 <tr>
+<td><code>--hilbert-envelope</code></td>
+<td></td>
+<td>flag</td>
+<td>Hilbert envelope of the xcorr</td>
+</tr>
+<tr>
 <td><code>--reliability-threshold</code></td>
 <td><code>-r</code></td>
 <td>float</td>
 <td>Minimum peak for reliable frames</td>
 </tr>
 <tr>
+<td><code>--max-delay</code></td>
+<td><code>-d</code></td>
+<td>float s</td>
+<td>Delay search range for <code>compensate-delay</code></td>
+</tr>
+<tr>
 <td><code>--output-file</code></td>
 <td><code>-o</code></td>
 <td>path</td>
-<td>Output path; honors <code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
+<td>CSV output; honors <code>XCORR_SIGNALS_OUTPUT_FILE</code></td>
+</tr>
+<tr>
+<td><code>--output-prefix</code></td>
+<td><code>-o</code></td>
+<td>str</td>
+<td>WAV output prefix for <code>compensate-delay</code></td>
 </tr>
 </tbody>
 </table>
