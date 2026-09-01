@@ -38,26 +38,8 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling", "uv-dynamic-versioning", "maturin>=1.5.0"]
+requires = ["maturin>=1.5.0"]
 build-backend = "maturin"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/xcorr_signals"]
-
-[tool.hatch.version]
-source = "uv-dynamic-versioning"
-
-[tool.uv-dynamic-versioning]
-fallback-version = "0.0.0"
-# CalVer YYYY.M.N: version comes exclusively from the release tag
-# pushed by .github/workflows/release.yml. uv-dynamic-versioning
-# matches the tag with the regex below; `latest-tag` selects the
-# most recent matching tag rather than commit-count schemes.
-vcs = "git"
-style = "pep440"
-latest-tag = true
-tag-dir = "tags"
-pattern = '^(?P<base>\d{4}\.\d{1,2}\.\d+)$'
 
 [tool.maturin]
 manifest-path = "src/xcorr_signals/Cargo.toml"
