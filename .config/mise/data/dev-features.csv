@@ -17,4 +17,3 @@ tracking,github:dolthub/dolt,latest,,,,
 tracking,pipx:beads-mcp,latest,mise x --command beads-mcp,beads,,
 general,,,bun x @wonderwhy-er/desktop-commander@latest,desktop-commander,wonderwhy-er/DesktopCommanderMCP,desktop-commander-overview
 general,,,bun x @modelcontextprotocol/server-sequential-thinking,sequential-thinking,,
-rust,rust-skills,,,https://codeberg.org/jr2804/copier-uv-plus.git,rust-skills,None

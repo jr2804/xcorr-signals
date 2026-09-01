@@ -1,6 +1,7 @@
-# Cross-correlation for audio signals
+# xcorr-signals
 
-> Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust.
+> Fast cross-correlation for estimating and compensating time delay between
+> audio signal channels. A Rust DSP core exposed through a Python API and CLI.
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
@@ -12,132 +13,133 @@
 
 ---
 
-## Quick Start
+## What it does
+
+`xcorr-signals` measures the time delay between a test audio signal and a
+reference — a common task in acoustics, speech quality assessment, and
+multi-channel recording alignment. It supports:
+
+- **Single-delay** estimation (constant delay across the whole recording)
+- **Delay-vs-time** tracking (per-frame delay for drifting channels)
+- **Delay compensation** (zero-pad both signals to align them)
+- **Multi-channel** pairing: 1×1, N×1, or M×M pairwise (1-indexed)
+
+The heavy lifting (FFT cross-correlation, Hilbert envelope, scaling) is done
+in Rust via PyO3/NumPy bindings; the Python layer provides a CLI and
+NumPy-compatible API.
+
+## Installation
+
+```bash
+# From PyPI (recommended)
+pip install xcorr-signals
+
+# Or with uv
+uv add xcorr-signals
+
+# Or from source
+uv sync
+uv run maturin develop
+```
+
+Requires **Python 3.13+** and a Rust toolchain (for source builds).
+
+## Quick start
+
+### Python API
+
+```python
+from xcorr_signals import xcorr, determine_delay_from_average_py
+import numpy as np
+
+fs = 48_000
+n = fs  # 1 second of audio
+
+# Create a test signal and a delayed reference
+reference = np.random.default_rng(42).standard_normal(n)
+test = np.zeros(n)
+test[240:] = reference[:-240]  # 5 ms delay @ 48 kHz
+
+# Estimate the delay
+delay = determine_delay_from_average_py(
+    test.reshape(-1, 1), reference,
+    frame_size=n, hop_size=n, n_lags=1000, scaling="normalized"
+)
+print(f"Estimated delay: {delay} samples ({delay/fs*1000:.3f} ms)")
+# → Estimated delay: 240 samples (5.000 ms)
+```
+
+### CLI
+
+```bash
+# Estimate a single delay
+xcorr-signals delay-from-average test.wav reference.wav
+
+# Track delay over time (per-frame)
+xcorr-signals delay-vs-time test.wav reference.wav -f 4096 -H 2048 -o delays.csv
+
+# Cross-correlation values for every lag
+xcorr-signals xcorr test.wav reference.wav -o xcorr.csv
+
+# Compensate (align) both signals
+xcorr-signals compensate-delay test.wav reference.wav -o aligned_
+# → aligned_test_compensated.wav
+# → aligned_reference_compensated.wav
+```
+
+All commands accept multi-channel WAV files. Channel pairing rules:
+
+| Channels | Pairing |
+|----------|---------|
+| 1 test + 1 ref | single pair `(1, 1)` |
+| N test + 1 ref | all combinations `(1,1), (2,1), … (N,1)` |
+| M test + M ref | pairwise `(1,1), (2,2), … (M,M)` |
+
+## Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `XCORR_SIGNALS_OUTPUT_FILE` | Default output file for CSV commands |
+
+## Documentation
+
+- **User guide**: [Delay estimation guide](https://jr2804.github.io/xcorr-signals/guides/delay-estimation/)
+- **Concepts**: [Cross-correlation](https://jr2804.github.io/xcorr-signals/concepts/cross-correlation/), [Convolution](https://jr2804.github.io/xcorr-signals/concepts/convolution/), [Hilbert transform](https://jr2804.github.io/xcorr-signals/concepts/hilbert-transform/)
+- **API reference**: [Python API](https://jr2804.github.io/xcorr-signals/reference/api/) · [CLI reference](https://jr2804.github.io/xcorr-signals/reference/cli/)
+- **Full docs**: [https://jr2804.github.io/xcorr-signals/](https://jr2804.github.io/xcorr-signals/)
+
+## Development
 
 ```bash
 # Clone and set up
 git clone https://github.com/jr2804/xcorr-signals.git
 cd xcorr-signals
-mise dev
-```
+mise dev          # install deps + Rust toolchain
 
-## Usage
+# Build Rust extension
+mise run build-rust
 
-### Running Tests
+# Run tests + quality checks
+mise test         # pytest with coverage
+mise lint         # ruff + ty + codespell
+mise all          # test + lint + format in one pass
 
-```bash
-mise test
-# or
-uv run pytest
-```
-
-### Code Quality
-
-```bash
-mise lint       # ruff + ty + codespell
-mise format     # ruff format + isort
-mise all        # test + lint + format in one pass
-```
-
-### CLI Commands
-
-```bash
-uv run xcorr_signals --help          # show all commands
-uv run xcorr_signals xcorr TEST.wav REF.wav -o xcorr.csv
-uv run xcorr_signals delay-vs-time TEST.wav REF.wav -f 4096 -H 2048
-uv run xcorr_signals delay-from-average TEST.wav REF.wav
-uv run xcorr_signals compensate-delay TEST.wav REF.wav
-uv run xcorr_signals --version   # show version
-```
-
-All commands accept multi-channel WAVs: N×1 pairs every test channel
-against the single reference, M×M pairs channels pairwise (1-indexed).
-
-```text
-
-| Environment Variable | Description |
-|----------------------|-------------|
-| `XCORR_SIGNALS_OUTPUT_FILE` | Default output file path |
-
-## Development
-
-### Pre-commit Hooks
-
-```bash
-pre-commit install
-pre-commit run --all-files
-```
-
-### Documentation
-
-```bash
-mise docs-serve          # live preview at http://localhost:8000
-mise docs-build          # build static site to site/
+# Documentation
+mise docs         # build static site
 ```
 
 ## CI/CD
 
-GitHub Actions runs on every push and PR:
-
 | Workflow | Triggers | Jobs |
 |----------|----------|------|
-| **CI** (`ci.yml`) | push, PR to main | test matrix (3.13, 3.14) + lint + type-check |
-| **Release** (`release.yml`) | tag `v*` | build + publish to PyPI |
+| **CI** (`ci.yml`) | push, PR to `main` | test matrix (3 OS × 3 Python versions) + lint + docs |
+| **Release** (`release.yml`) | CalVer tag push | build platform wheels + sdist, publish to PyPI |
 
-## AI Dev-Features
+## Contributing
 
-This project includes optional AI-agent tooling. After `mise dev`, install with:
-
-```bash
-mise run add-mcp-servers <agent>   # register MCP servers (claude, codex, gemini, ...)
-mise run add-skills                # install agent skills
-```
-
-Enabled dev-features are listed in `.config/mise/conf.d/mcp.toml` and
-`.config/mise/conf.d/skills.toml`.
-
-## Project Structure
-
-```text
-xcorr-signals/
-├── .config/mise/               # mise task definitions
-├── .github/workflows/          # CI + release workflows
-├── docs/                       # Zensical documentation (Diátaxis)
-├── src/xcorr_signals/     # Source package
-│   ├── __init__.py
-│   ├── __about__.py
-│   └── cli/
-│       ├── __init__.py
-│       ├── app.py
-│       ├── args.py
-│       └── commands.py
-├── tests/                      # Test suite
-├── .copier-answers.yml         # Template version tracking
-├── pyproject.toml              # uv + hatch + pytest config
-├── ruff.toml                   # Linter + formatter config
-├── ty.toml                     # Type checker config
-└── README.md
-```
-
-## Tech Stack
-
-| Layer | Tool | Purpose |
-|-------|------|---------|
-| Package manager | [uv](https://docs.astral.sh/uv/) | Fast installs, deterministic lockfile |
-| Task runner | [mise](https://mise.jdx.dev/) | DAG-based tasks, tool version management |
-| Linter + formatter | [ruff](https://docs.astral.sh/ruff/) | Single-binary code quality |
-| Type checker | [ty](https://github.com/google/ty) | Strict type checking |
-| Testing | [pytest](https://pytest.org/) | Test framework with 100% coverage gate |
-| Spell check | [codespell](https://github.com/codespell-project/codespell) | Code and doc spell checking |
-| Documentation | [Zensical](https://github.com/zensical/zensical) | MkDocs Material with executable examples |
-| Versioning | [uv-dynamic-versioning](https://github.com/ninoseki/uv-dynamic-versioning) | Git tag-based versioning |
-| Hooks | [pre-commit](https://pre-commit.com/) | Automated quality gate |
-| CI/CD | GitHub Actions | Test matrix + PyPI release |
+See [Contributing](https://jr2804.github.io/xcorr-signals/contributing/) and
+[Code of Conduct](https://jr2804.github.io/xcorr-signals/code_of_conduct/).
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
-
----
-
-Generated from [copier-uv-plus](https://codeberg.org/jr2804/copier-uv-plus).
+MIT — see [LICENSE](LICENSE).
