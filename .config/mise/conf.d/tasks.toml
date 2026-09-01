@@ -4,6 +4,7 @@ run = "uv sync -U --dev --all-extras --all-groups"
 
 [tasks.build-rust]
 description = "Build Rust extension with maturin"
+depends = ["dev"]
 run = "uv run maturin develop"
 
 [tasks.build-rust-release]
@@ -41,6 +42,7 @@ run = "rumdl fmt --config .config/rumdl.toml src/ docs/ tests/ ./"
 
 [tasks.test]
 description = "Run tests with coverage"
+depends = ["build-rust"]
 run = "uv run pytest --cov=xcorr_signals"
 sources = ["src/**/*.py", "tests/**/*.py"]
 outputs = ["htmlcov/", ".coverage"]
