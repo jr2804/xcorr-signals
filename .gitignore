@@ -46,8 +46,16 @@ mcporter.json
 !/.agents/*.md
 !/.agents/history/
 !/.agents/history/**
+
 # Implementation plans — mutable working artifacts, never committed
 /.agents/plans/
 
 # custom/local/misc. files
 mise.local.toml
+
+# build artifacts
+target/
+*.dll
+*.so
+*.pdb
+*.pyd
