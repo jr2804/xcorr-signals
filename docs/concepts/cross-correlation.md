@@ -44,17 +44,43 @@ $+60$ samples (orange). Shaded regions mark the overlapping interval.
 *Bottom row:* the cross-correlation function. The value at each lag is the sum
 of products inside the overlap.
 
+## Properties
+
+For real signals the cross-correlation satisfies three useful inequalities
+(all proven directly from the Cauchy–Schwarz inequality):
+
+- **Maximum at lag 0** (autocorrelation):  $\varphi_{xx}(0) = E_x$ (signal energy).
+- **Bounded**:  $|\varphi_{xy}(\tau)| \le \sqrt{\varphi_{xx}(0)\,\varphi_{yy}(0)}$.
+- **Even symmetry** (autocorrelation):  $\varphi_{xx}(-\tau) = \varphi_{xx}(\tau)$.
+
+## Wiener–Khinchin (deterministic form)
+
+The autocorrelation and the **energy density spectrum** are a Fourier pair:
+
+$$
+\varphi_{xx}(\tau) \;\xleftrightarrow{\;\mathcal{F}\;}\; |X(f)|^{2}
+$$
+
+This is the bridge between "shape matching" in the time domain and spectral
+content in the frequency domain. For random (power) signals the same theorem
+holds with autocorrelation replaced by its time average and the energy spectrum
+replaced by the **power spectral density** (PSD).
+
 ## Relation to convolution
 
 Cross-correlation looks like convolution, but **without flipping** the second
-signal. The two operations are related by a time-reversal:
+signal. The two operations are related by a time-reversal and conjugation:
 
 $$
-x \star y \;=\; \overline{x(-t)} * y(t)
+(x \star y)(t) \;=\; \overline{x(-t)} * y(t)
+\;=\; \int_{-\infty}^{\infty} \overline{x(\tau)}\,y(t+\tau)\,d\tau
 $$
 
-In the frequency domain this becomes a point-wise multiplication with a
-complex-conjugate:
+If $x$ is real the conjugate disappears and the relation simplifies to the
+time-reversal identity shown in the figure below.
+
+In the frequency domain the point-wise spectrum multiplication carries the
+conjugate on the second factor:
 
 $$
 \mathcal{F}\{x \star y\}(\omega) \;=\; X(\omega)\,\overline{Y(\omega)}

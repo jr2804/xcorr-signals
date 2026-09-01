@@ -29,6 +29,13 @@ $$
 - Negative frequencies are shifted by $+90°$ ($+i$).
 - DC ($\omega = 0$) is zeroed.
 
+In spectral terms the Hilbert operator multiplies the positive-frequency
+lobe of $X(f)$ by $-j$ and the negative-frequency lobe by $+j$, leaving
+the magnitude unchanged. This sign discrimination is what makes the
+Hilbert transform indispensable for **single-sideband (SSB) modulation**:
+by removing one spectral sideband, SSB halves the transmission bandwidth
+without losing information.
+
 Applying the transform twice returns the negative original:
 $\mathcal{H}\{\mathcal{H}[x]\} = -x$.
 

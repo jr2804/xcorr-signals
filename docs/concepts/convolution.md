@@ -35,8 +35,10 @@ x \star h \;=\; \overline{x(-t)} * h(t)
 $$
 
 In words: *correlate* $x$ with $h$ = *convolve* the time-reversed conjugate of
-$x$ with $h$. The peak of the cross-correlation therefore appears at the
-negative of the lag that would align the flipped kernel in a convolution.
+$x$ with $h$. The conjugate matters only for complex signals; for real signals
+it reduces to a simple time reversal. The peak of the cross-correlation
+therefore appears at the negative of the lag that would align the flipped
+kernel in a convolution.
 
 ![Convolution flips the kernel; cross-correlation shifts without flipping](../assets/images/math_conv_vs_corr.svg)
 
