@@ -80,8 +80,8 @@ jobs:
       if: steps.version.outputs.needs_tag == 'true'
       run: |
         set -euo pipefail
-        git config user.name "GitHub Actions"
-        git config user.email "actions@github.com"
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
         version="${{ steps.version.outputs.version }}"
         git tag -a "$version" -m "Release $version"
         git push origin "$version"
@@ -92,7 +92,10 @@ jobs:
         set -euo pipefail
         # maturin derives the wheel/sdist version from Cargo.toml ([project]
         # version is dynamic) — stamp it so artifacts match the CalVer tag.
-        sed -i "s/^version = \".*\"/version = \"${{ steps.version.outputs.version }}\"/" \
+        # Cargo uses strict semver: strip leading zeros (2026.09.2 -> 2026.9.2).
+        calver="${{ steps.version.outputs.version }}"
+        cargo_version="$(printf '%s' "$calver" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
+        sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
           src/xcorr_signals/Cargo.toml
         uv build
 
