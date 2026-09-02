@@ -1575,18 +1575,20 @@ figure with <code>uv run scripts/gen_examples.py</code>.</p>
 the clean reference (blue):</p>
 <p><img alt="Reference burst vs degraded, delayed test burst" src="../assets/images/signal_degradation.svg" /></p>
 <h2 id="average-xcorr">Average xcorr<a class="headerlink" href="#average-xcorr" title="Permanent link">&para;</a></h2>
-<p>Mode 2 on a single degraded burst delayed by 5 ms: the normalized correlation
-peaks at 89 % — below 100 % because part of the signal energy is
-distortion and noise:</p>
-<p><img alt="Average cross-correlation with peak marker" src="../assets/images/xcorr_average.svg" /></p>
+<p>Mode 2 on a single degraded burst delayed by 5 ms: the normalized
+<strong>Hilbert-envelope</strong> correlation peaks at 87 % — below 100 % because part of
+the signal energy is distortion and noise.  Using the envelope instead of
+the raw CCF removes ringing side-lobes and produces a single clean peak that
+is easier to locate:</p>
+<p><img alt="Average cross-correlation with Hilbert envelope and peak marker" src="../assets/images/xcorr_average.svg" /></p>
 <h2 id="xcorr-vs-time">XCorr vs time<a class="headerlink" href="#xcorr-vs-time" title="Permanent link">&para;</a></h2>
 <p>Mode 1 over 20 segments of 200 ms, one burst each, jittered by
-<span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>. Each segment uses a different burst, SNR, and FIR
+<span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>.  Each segment uses a different burst, SNR, and FIR
 length, so the correlation ridge wanders with the jitter while peak heights
-vary with degradation:</p>
-<p><img alt="XCorr heatmap over time and lag" src="../assets/images/xcorr_vs_time.svg" /></p>
+vary with degradation.  The <strong>Hilbert envelope</strong> keeps the ridge sharp:</p>
+<p><img alt="XCorr heatmap over time and lag (Hilbert envelope)" src="../assets/images/xcorr_vs_time.svg" /></p>
 <p>The same data as a 3D surface:</p>
-<p><img alt="3D surface of xcorr over time and lag" src="../assets/images/xcorr_3d.svg" /></p>
+<p><img alt="3D surface of xcorr over time and lag (Hilbert envelope)" src="../assets/images/xcorr_3d.svg" /></p>
 <h2 id="percentile-analysis">Percentile analysis<a class="headerlink" href="#percentile-analysis" title="Permanent link">&para;</a></h2>
 <p>Per-frame peaks stay below 100 %; all 20 frames pass a 0.3 reliability
 threshold. Delay error against the true jitter shows three clusters — the
