@@ -55,6 +55,7 @@ def main() -> None:
         seg_len,
         n_lags=n_lags,
         scaling="normalized",
+        hilbert_envelope=True,
         reliability_threshold=0.3,
     )
     est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames])
@@ -95,7 +96,7 @@ def fig_signal(ref: np.ndarray, test: np.ndarray, delay: int) -> None:
 
 
 def fig_xcorr_average(ref: np.ndarray, test: np.ndarray, delay_s: float) -> None:
-    lags, values = xcorr(test.reshape(-1, 1), ref, hilbert_envelope=False, scaling="normalized")
+    lags, values = xcorr(test.reshape(-1, 1), ref, hilbert_envelope=True, scaling="normalized")
     fig, ax = plt.subplots(figsize=(4.2, 2.6), constrained_layout=True)
     ax.plot(lags / FS * 1000, values, lw=0.9, color="#0072B2")
     imax = int(np.argmax(values))
@@ -125,6 +126,7 @@ def fig_xcorr_vs_time(ref: np.ndarray, test: np.ndarray, three_d: bool) -> None:
         seg_len,
         n_lags=n_lags,
         scaling="normalized",
+        hilbert_envelope=True,
         reliability_threshold=0.3,
     )
     lags = result.frames[0].lags / FS * 1000

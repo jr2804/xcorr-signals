@@ -14,6 +14,9 @@ rules only.
   `scripts/gen_examples.py` and `scripts/gen_math_figures.py` — never
   hand-edit; rerun the relevant script instead. Keep each SVG under 10 MB
   (rasterize heatmaps, downsample grids).
+- Example figures use **Hilbert envelope** (`hilbert_envelope=True`) for
+  clean, single-peak visualisations; raw CCF side-lobes would clutter the
+  documentation plots.
 - Diagrams: Mermaid fences (`pymdownx.superfences` custom fence
   `mermaid`), defined in `zensical.toml`.
 - Navigation: every `.md` page must appear in `nav` in `zensical.toml`.

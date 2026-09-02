@@ -17,24 +17,26 @@ the clean reference (blue):
 
 ## Average xcorr
 
-Mode 2 on a single degraded burst delayed by 5 ms: the normalized correlation
-peaks at 89 % — below 100 % because part of the signal energy is
-distortion and noise:
+Mode 2 on a single degraded burst delayed by 5 ms: the normalized
+**Hilbert-envelope** correlation peaks at 87 % — below 100 % because part of
+the signal energy is distortion and noise.  Using the envelope instead of
+the raw CCF removes ringing side-lobes and produces a single clean peak that
+is easier to locate:
 
-![Average cross-correlation with peak marker](../assets/images/xcorr_average.svg)
+![Average cross-correlation with Hilbert envelope and peak marker](../assets/images/xcorr_average.svg)
 
 ## XCorr vs time
 
 Mode 1 over 20 segments of 200 ms, one burst each, jittered by
-$\pm 30\;\mathrm{ms}$. Each segment uses a different burst, SNR, and FIR
+$\pm 30\;\mathrm{ms}$.  Each segment uses a different burst, SNR, and FIR
 length, so the correlation ridge wanders with the jitter while peak heights
-vary with degradation:
+vary with degradation.  The **Hilbert envelope** keeps the ridge sharp:
 
-![XCorr heatmap over time and lag](../assets/images/xcorr_vs_time.svg)
+![XCorr heatmap over time and lag (Hilbert envelope)](../assets/images/xcorr_vs_time.svg)
 
 The same data as a 3D surface:
 
-![3D surface of xcorr over time and lag](../assets/images/xcorr_3d.svg)
+![3D surface of xcorr over time and lag (Hilbert envelope)](../assets/images/xcorr_3d.svg)
 
 ## Percentile analysis
 
