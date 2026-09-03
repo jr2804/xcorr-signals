@@ -1584,18 +1584,23 @@ the raw CCF removes ringing side-lobes and produces a single clean peak that
 is easier to locate:</p>
 <p><img alt="Average cross-correlation with Hilbert envelope and peak marker" src="../assets/images/xcorr_average.svg" /></p>
 <h2 id="xcorr-vs-time">XCorr vs time<a class="headerlink" href="#xcorr-vs-time" title="Permanent link">&para;</a></h2>
-<p>Mode 1 over 20 segments of 200 ms, one burst each, jittered by
-<span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>. Each segment uses a different burst, SNR, and FIR
-length, so the correlation ridge wanders with the jitter while peak heights
-vary with degradation. The <strong>Hilbert envelope</strong> keeps the ridge sharp:</p>
+<p>Mode 1 over 20 segments of 200 ms, one burst each. The delay follows a
+<strong>sawtooth drift</strong> — a linear ramp from <span class="arithmatex">\(-25\;\mathrm{ms}\)</span> to
+<span class="arithmatex">\(+25\;\mathrm{ms}\)</span> across segments (a clock-drift model) plus <span class="arithmatex">\(\pm 2\;\mathrm{ms}\)</span>
+residual jitter — so the correlation ridge sweeps diagonally while peak
+heights vary with the per-segment SNR and FIR filtering. The <strong>Hilbert
+envelope</strong> keeps the ridge sharp:</p>
 <p><img alt="XCorr heatmap over time and lag (Hilbert envelope)" src="../assets/images/xcorr_vs_time.svg" /></p>
 <p>The same data as a 3D surface:</p>
 <p><img alt="3D surface of xcorr over time and lag (Hilbert envelope)" src="../assets/images/xcorr_3d.svg" /></p>
 <h2 id="percentile-analysis">Percentile analysis<a class="headerlink" href="#percentile-analysis" title="Permanent link">&para;</a></h2>
-<p>Per-frame peaks stay below 100 %; all 20 frames pass a 0.3 reliability
-threshold. Delay error against the true jitter shows three clusters — the
-16/32/63-sample group delays of the per-segment FIR filters. Percentiles
-quantify this systematic bias:</p>
+<p>All 20 frames pass a 0.3 reliability threshold. For <strong>delay
+compensation</strong> the goal is a single robust delay for the whole signal pair —
+not the per-segment values. The delay-vs-time estimates are therefore
+analysed statistically: percentiles quantify the spread of the estimated
+delays, and the median (P50) is the robust compensation delay. It absorbs
+both the drift and the small FIR group-delay bias (<span class="arithmatex">\(0.33\)</span>–<span class="arithmatex">\(1.31\;\mathrm{ms}\)</span>);
+what remains is residual error:</p>
 <table>
 <thead>
 <tr>
@@ -1606,26 +1611,26 @@ quantify this systematic bias:</p>
 <tbody>
 <tr>
 <td>P5</td>
-<td>+0.333 ms</td>
+<td><span class="arithmatex">\(-20.81\)</span> ms</td>
 </tr>
 <tr>
-<td>P50</td>
-<td>+0.667 ms</td>
+<td>P50 (compensation delay)</td>
+<td><span class="arithmatex">\(+0.31\)</span> ms</td>
 </tr>
 <tr>
 <td>P95</td>
-<td>+1.313 ms</td>
+<td><span class="arithmatex">\(+22.21\)</span> ms</td>
 </tr>
 <tr>
-<td>max |error|</td>
-<td>1.313 ms</td>
+<td>max |error| of P50</td>
+<td><span class="arithmatex">\(1.31\)</span> ms</td>
 </tr>
 </tbody>
 </table>
-<p><img alt="Estimated vs true delay and error percentiles" src="../assets/images/delay_percentiles.svg" /></p>
-<p>The jitter itself (up to <span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>) is recovered exactly; what
-remains is the filter group delay — visible only because the noise-burst
-signals resolve single-sample peaks.</p>
+<p><img alt="Delay vs time and histogram of estimated delays with percentiles" src="../assets/images/delay_percentiles.svg" /></p>
+<p>The drift itself is recovered exactly; the residual is the filter group
+delay — visible only because the noise-burst signals resolve single-sample
+peaks.</p>
 <h2 id="reproduce">Reproduce<a class="headerlink" href="#reproduce" title="Permanent link">&para;</a></h2>
 <p>The generator lives in <code>scripts/gen_examples.py</code>; figures are committed
 under <code>docs/assets/images/</code> and rebuilt only on demand. Common constants:</p>
