@@ -27,10 +27,12 @@ is easier to locate:
 
 ## XCorr vs time
 
-Mode 1 over 20 segments of 200 ms, one burst each, jittered by
-$\pm 30\;\mathrm{ms}$. Each segment uses a different burst, SNR, and FIR
-length, so the correlation ridge wanders with the jitter while peak heights
-vary with degradation. The **Hilbert envelope** keeps the ridge sharp:
+Mode 1 over 20 segments of 200 ms, one burst each. The delay follows a
+**sawtooth drift** — a linear ramp from $-25\;\mathrm{ms}$ to
+$+25\;\mathrm{ms}$ across segments (a clock-drift model) plus $\pm 2\;\mathrm{ms}$
+residual jitter — so the correlation ridge sweeps diagonally while peak
+heights vary with the per-segment SNR and FIR filtering. The **Hilbert
+envelope** keeps the ridge sharp:
 
 ![XCorr heatmap over time and lag (Hilbert envelope)](../assets/images/xcorr_vs_time.svg)
 
@@ -40,23 +42,26 @@ The same data as a 3D surface:
 
 ## Percentile analysis
 
-Per-frame peaks stay below 100 %; all 20 frames pass a 0.3 reliability
-threshold. Delay error against the true jitter shows three clusters — the
-16/32/63-sample group delays of the per-segment FIR filters. Percentiles
-quantify this systematic bias:
+All 20 frames pass a 0.3 reliability threshold. For **delay
+compensation** the goal is a single robust delay for the whole signal pair —
+not the per-segment values. The delay-vs-time estimates are therefore
+analysed statistically: percentiles quantify the spread of the estimated
+delays, and the median (P50) is the robust compensation delay. It absorbs
+both the drift and the small FIR group-delay bias ($0.33$–$1.31\;\mathrm{ms}$);
+what remains is residual error:
 
 | Statistic | Value |
 | --------- | ----- |
-| P5 | +0.333 ms |
-| P50 | +0.667 ms |
-| P95 | +1.313 ms |
-| max \|error\| | 1.313 ms |
+| P5 | $-20.81$ ms |
+| P50 (compensation delay) | $+0.31$ ms |
+| P95 | $+22.21$ ms |
+| max \|error\| of P50 | $1.31$ ms |
 
-![Estimated vs true delay and error percentiles](../assets/images/delay_percentiles.svg)
+![Delay vs time and histogram of estimated delays with percentiles](../assets/images/delay_percentiles.svg)
 
-The jitter itself (up to $\pm 30\;\mathrm{ms}$) is recovered exactly; what
-remains is the filter group delay — visible only because the noise-burst
-signals resolve single-sample peaks.
+The drift itself is recovered exactly; the residual is the filter group
+delay — visible only because the noise-burst signals resolve single-sample
+peaks.
 
 ## Reproduce
 

@@ -24,7 +24,8 @@ B_SEGMENTS = 20
 B_LEAD_S = 0.040
 B_BURST_S = 0.120
 B_TAIL_S = 0.040
-B_JITTER_S = 0.030  # +/- 30 ms jitter
+B_DRIFT_S = 0.025  # sawtooth drift: delay ramps +/- 25 ms across segments
+B_JITTER_MS = 2.0  # residual jitter on top of the drift
 B_LAG_WINDOW_S = 0.040  # +/- 40 ms lag window
 
 
@@ -60,11 +61,11 @@ def main() -> None:
     )
     est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames])
     peaks = np.array([f.peak_value for f in result.frames])
-    stats = fig_delay_percentiles(true_ms, est_ms, peaks)
+    stats = fig_delay_percentiles(true_ms, est_ms)
 
     print("figures written to", OUT)
     print("reliable frames:", len(result.reliable_indices), "/", len(result.frames))
-    print("error ms: P5={p5:+.3f} P50={p50:+.3f} P95={p95:+.3f} max|e|={max_abs:.3f}".format(**stats))
+    print("delay ms: P5={p5:+.2f} P50={p50:+.2f} P95={p95:+.2f} max|err|={max_abs:.3f}".format(**stats))
     print(f"peak: {peaks.min():.3f} .. {peaks.max():.3f} (P5={np.percentile(peaks, 5):.3f} P95={np.percentile(peaks, 95):.3f})")
 
 
@@ -157,47 +158,65 @@ def fig_xcorr_vs_time(ref: np.ndarray, test: np.ndarray, three_d: bool) -> None:
     plt.close(fig)
 
 
-def fig_delay_percentiles(true_ms: np.ndarray, est_ms: np.ndarray, peaks: np.ndarray) -> dict[str, float]:
-    error_ms = est_ms - true_ms
+def fig_delay_percentiles(true_ms: np.ndarray, est_ms: np.ndarray) -> dict[str, float]:
+    """Percentile analysis over the estimated delay vs time.
+
+    Delay compensation needs ONE robust delay for the whole signal pair:
+    percentiles quantify the spread of the delay-vs-time estimates and the
+    median (P50) is the robust compensation delay.
+    """
     stats = {
-        "p5": float(np.percentile(error_ms, 5)),
-        "p50": float(np.percentile(error_ms, 50)),
-        "p95": float(np.percentile(error_ms, 95)),
-        "max_abs": float(np.max(np.abs(error_ms))),
+        "p5": float(np.percentile(est_ms, 5)),
+        "p50": float(np.percentile(est_ms, 50)),
+        "p95": float(np.percentile(est_ms, 95)),
+        "max_abs": float(np.max(np.abs(est_ms - true_ms))),
     }
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(4.7, 4.6), constrained_layout=True, sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(7.0, 5.2), constrained_layout=True)
     seg = np.arange(1, true_ms.size + 1)
-    ax1.plot(seg, true_ms, "o-", ms=3, lw=0.8, color="#009E73", label="true jitter")
+    ax1.plot(seg, true_ms, "o-", ms=3, lw=0.8, color="#009E73", label="true delay")
     ax1.plot(seg, est_ms, "s--", ms=3, lw=0.8, color="#D55E00", label="estimated")
+    ax1.axhline(stats["p50"], color="#CC79A7", lw=1.0, ls="--")
+    ax1.text(
+        0.02,
+        stats["p50"] + 1.2,
+        f"P50 {stats['p50']:+.2f} ms — compensation delay",
+        transform=ax1.get_yaxis_transform(),
+        fontsize=7,
+        color="#CC79A7",
+        va="bottom",
+    )
     ax1.set_ylabel("Delay (ms)")
-    ax1.legend(loc="upper right", frameon=False, ncol=2)
+    ax1.legend(loc="upper left", frameon=False, ncol=2)
 
-    ax2.plot(seg, error_ms, "o", ms=3, color="#0072B2")
+    ax2.hist(est_ms, bins=12, color="#0072B2", alpha=0.85)
     for key, ls in (("p5", ":"), ("p50", "--"), ("p95", ":")):
-        ax2.axhline(stats[key], color="#CC79A7", lw=0.8, ls=ls)
-    ax2.set_xlabel("Segment")
-    ax2.set_ylabel("Error (ms)")
+        ax2.axvline(stats[key], color="#CC79A7", lw=1.0, ls=ls)
+    ax2.set_xlabel("Estimated delay (ms)")
+    ax2.set_ylabel("Segments")
     fig.savefig(OUT / "delay_percentiles.svg")
     plt.close(fig)
     return stats
 
 
 def scenario_b() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Build the jittered 20-segment scenario.
+    """Build the drift-delayed 20-segment scenario.
 
-    Returns (ref, test, true_ms, snr_db). Each segment gets its own jitter,
-    SNR (22–28 dB) and a linear-phase FIR lowpass (33/65/127 taps) whose
-    group delay (0.33–1.31 ms) biases the xcorr peak.
+    Returns (ref, test, true_ms, snr_db). The delay follows a sawtooth
+    drift (linear ramp -25..+25 ms, a clock-drift model) plus +/- 2 ms
+    residual jitter. Each segment gets its own SNR (22-28 dB) and a
+    linear-phase FIR lowpass (33/65/127 taps) whose group delay
+    (0.33-1.31 ms) biases the xcorr peak.
     """
     lead = int(B_LEAD_S * FS)
     n_burst = int(B_BURST_S * FS)
     tail = int(B_TAIL_S * FS)
     seg_len = lead + n_burst + tail
-    jitter_max = int(B_JITTER_S * FS)
 
     rng = np.random.default_rng(7)
-    jitter = rng.integers(-jitter_max, jitter_max + 1, size=B_SEGMENTS)
+    drift = np.linspace(-B_DRIFT_S, B_DRIFT_S, B_SEGMENTS) * FS
+    micro = rng.integers(-int(B_JITTER_MS), int(B_JITTER_MS) + 1, size=B_SEGMENTS) / 1000 * FS
+    jitter = np.round(drift + micro).astype(int)
     snr_db = rng.uniform(22.0, 28.0, size=B_SEGMENTS)
     taps = rng.choice([33, 65, 127], size=B_SEGMENTS)
 
