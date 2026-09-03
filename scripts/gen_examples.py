@@ -85,7 +85,7 @@ def style() -> None:
 
 def fig_signal(ref: np.ndarray, test: np.ndarray, delay: int) -> None:
     t = np.arange(ref.size) / FS * 1000
-    fig, ax = plt.subplots(figsize=(5.2, 2.2), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.0, 3.0), constrained_layout=True)
     ax.plot(t, ref, lw=0.6, color="#0072B2", label="reference")
     ax.plot(t + delay / FS * 1000, test, lw=0.6, color="#D55E00", label="test (degraded)")
     ax.set_xlabel("Time (ms)")
@@ -97,7 +97,7 @@ def fig_signal(ref: np.ndarray, test: np.ndarray, delay: int) -> None:
 
 def fig_xcorr_average(ref: np.ndarray, test: np.ndarray, delay_s: float) -> None:
     lags, values = xcorr(test.reshape(-1, 1), ref, hilbert_envelope=True, scaling="normalized")
-    fig, ax = plt.subplots(figsize=(4.2, 2.6), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(5.7, 3.5), constrained_layout=True)
     ax.plot(lags / FS * 1000, values, lw=0.9, color="#0072B2")
     imax = int(np.argmax(values))
     ax.axvline(lags[imax] / FS * 1000, color="#D55E00", lw=0.7, ls="--")
@@ -135,7 +135,7 @@ def fig_xcorr_vs_time(ref: np.ndarray, test: np.ndarray, three_d: bool) -> None:
 
     if three_d:
         TT, LL = np.meshgrid(t_s, lags, indexing="ij")
-        fig = plt.figure(figsize=(5.2, 3.2), constrained_layout=True)
+        fig = plt.figure(figsize=(7.0, 4.3), constrained_layout=True)
         ax = fig.add_subplot(111, projection="3d")
         surf = ax.plot_surface(TT, LL, matrix, cmap="viridis", rstride=1, cstride=8, linewidth=0)
         fig.colorbar(surf, ax=ax, pad=0.08, label="Normalized xcorr")
@@ -147,7 +147,7 @@ def fig_xcorr_vs_time(ref: np.ndarray, test: np.ndarray, three_d: bool) -> None:
         return
 
     stride = 4  # thin out lags: 0.08 ms resolution is plenty for the map
-    fig, ax = plt.subplots(figsize=(5.2, 2.8), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(7.0, 3.8), constrained_layout=True)
     pcm = ax.pcolormesh(t_s, lags[::stride], matrix[:, ::stride].T, cmap="viridis", shading="auto")
     cbar = fig.colorbar(pcm, ax=ax, pad=0.01)
     cbar.set_label("Normalized xcorr")
@@ -166,7 +166,7 @@ def fig_delay_percentiles(true_ms: np.ndarray, est_ms: np.ndarray, peaks: np.nda
         "max_abs": float(np.max(np.abs(error_ms))),
     }
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(3.5, 3.4), constrained_layout=True, sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(4.7, 4.6), constrained_layout=True, sharex=True)
     seg = np.arange(1, true_ms.size + 1)
     ax1.plot(seg, true_ms, "o-", ms=3, lw=0.8, color="#009E73", label="true jitter")
     ax1.plot(seg, est_ms, "s--", ms=3, lw=0.8, color="#D55E00", label="estimated")

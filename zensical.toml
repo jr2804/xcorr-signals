@@ -5,6 +5,7 @@ site_author = "Jan.Reimes"
 site_url = "https://github.com/jr2804/xcorr-signals"
 repo_url = "https://github.com/jr2804/xcorr-signals"
 repo_name = "xcorr-signals"
+extra_css = ["assets/stylesheets/figures.css"]
 copyright = "Copyright &copy; 2026 Jan.Reimes"
 nav = [
   { "Home" = [
@@ -91,6 +92,16 @@ primary = "black"
 accent = "lime"
 toggle.icon = "material/weather-night"
 toggle.name = "Switch to system preference"
+
+# ----------------------------------------------------------------------------
+# Extra JavaScript (MathJax for arithmatex)
+# ----------------------------------------------------------------------------
+[[project.extra_javascript]]
+path = "javascripts/mathjax.js"
+
+[[project.extra_javascript]]
+path = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js"
+type = "text/javascript"
 
 # ----------------------------------------------------------------------------
 # Social configuration

@@ -83,7 +83,7 @@ def _fig_definition() -> None:
     x_noisy = x + rng.standard_normal(n) * 0.15
     lags, corr = xcorr(x_noisy.reshape(-1, 1), y_noisy, hilbert_envelope=False, scaling="normalized")
 
-    fig = plt.figure(figsize=(7.0, 4.0))
+    fig = plt.figure(figsize=(9.5, 5.4))
     fig.set_facecolor(BG)
     gs = fig.add_gridspec(2, 3, height_ratios=[1, 1], wspace=0.22, hspace=0.35,
                           left=0.07, right=0.98, top=0.92, bottom=0.08)
@@ -138,7 +138,7 @@ def _fig_conv_vs_corr() -> None:
     cv = np.convolve(x, h, mode="full")
     lags_full = np.arange(-n + 1, n)
 
-    fig, axes = plt.subplots(1, 3, figsize=(8.2, 2.3), constrained_layout=True)
+    fig, axes = plt.subplots(1, 3, figsize=(11.1, 3.1), constrained_layout=True)
     fig.set_facecolor(BG)
     ax = axes[0]
     ax.plot(k, x, color=BLUE, lw=1.0, label="x")
@@ -171,7 +171,7 @@ def _fig_hilbert() -> None:
     h = np.fft.ifft(-1j * np.sign(np.fft.fftfreq(n, 1 / FS) + 1e-300) * np.fft.fft(x)).real
     env = np.abs(x + 1j * h)
 
-    fig, ax = plt.subplots(figsize=(6.8, 2.4), constrained_layout=True)
+    fig, ax = plt.subplots(figsize=(9.2, 3.2), constrained_layout=True)
     fig.set_facecolor(BG)
     ax.plot(t * 1000, x, color=BLUE, lw=1.0, label="x(t)")
     ax.plot(t * 1000, h, color=ORANGE, lw=1.0, label="H[x(t)] (90° shift)")
@@ -203,7 +203,7 @@ def _fig_ccfht() -> None:
     lags, ccf = xcorr(xn.reshape(-1, 1), yn, hilbert_envelope=False, scaling="normalized")
     ccfht = np.fft.ifft(-1j * np.sign(np.fft.fftfreq(ccf.size, 1.0) + 1e-300) * np.fft.fft(ccf)).real
 
-    fig, axes = plt.subplots(2, 1, figsize=(7.0, 3.6), sharex=True)
+    fig, axes = plt.subplots(2, 1, figsize=(9.5, 4.9), sharex=True)
     fig.set_facecolor(BG)
     fig.subplots_adjust(left=0.09, right=0.98, top=0.92, bottom=0.10, hspace=0.45)
 
@@ -257,7 +257,7 @@ def _fig_scaling() -> None:
     y[: n - tau0] = x[tau0:]
     y += 0.2 * rng.standard_normal(n)
 
-    fig, axes = plt.subplots(2, 2, figsize=(7.0, 3.6), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(9.5, 4.9), constrained_layout=True)
     fig.set_facecolor(BG)
     cases = [
         ("none", "raw"),
