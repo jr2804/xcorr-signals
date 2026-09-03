@@ -1,0 +1,5 @@
+/* Documentation figures span the full content width. */
+article img {
+  width: 100%;
+  height: auto;
+}

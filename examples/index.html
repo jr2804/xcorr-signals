@@ -60,6 +60,8 @@
       
     
     
+      <link rel="stylesheet" href="../assets/stylesheets/figures.css">
+    
     <script>__md_scope=new URL("..",location),__md_scope.pathname.endsWith("/")||(__md_scope=new URL(__md_scope.pathname+"/",location)),__md_hash=e=>[...e].reduce(((e,t)=>(e<<5)-e+t.charCodeAt(0)),0),__md_get=(e,t=localStorage,_=__md_scope)=>JSON.parse(t.getItem(_.pathname+"."+e)),__md_set=(e,t,_=localStorage,a=__md_scope)=>{try{_.setItem(a.pathname+"."+e,JSON.stringify(t))}catch(e){}},document.documentElement.setAttribute("data-platform",navigator.platform)</script>
     
       
@@ -1577,15 +1579,15 @@ the clean reference (blue):</p>
 <h2 id="average-xcorr">Average xcorr<a class="headerlink" href="#average-xcorr" title="Permanent link">&para;</a></h2>
 <p>Mode 2 on a single degraded burst delayed by 5 ms: the normalized
 <strong>Hilbert-envelope</strong> correlation peaks at 87 % — below 100 % because part of
-the signal energy is distortion and noise.  Using the envelope instead of
+the signal energy is distortion and noise. Using the envelope instead of
 the raw CCF removes ringing side-lobes and produces a single clean peak that
 is easier to locate:</p>
 <p><img alt="Average cross-correlation with Hilbert envelope and peak marker" src="../assets/images/xcorr_average.svg" /></p>
 <h2 id="xcorr-vs-time">XCorr vs time<a class="headerlink" href="#xcorr-vs-time" title="Permanent link">&para;</a></h2>
 <p>Mode 1 over 20 segments of 200 ms, one burst each, jittered by
-<span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>.  Each segment uses a different burst, SNR, and FIR
+<span class="arithmatex">\(\pm 30\;\mathrm{ms}\)</span>. Each segment uses a different burst, SNR, and FIR
 length, so the correlation ridge wanders with the jitter while peak heights
-vary with degradation.  The <strong>Hilbert envelope</strong> keeps the ridge sharp:</p>
+vary with degradation. The <strong>Hilbert envelope</strong> keeps the ridge sharp:</p>
 <p><img alt="XCorr heatmap over time and lag (Hilbert envelope)" src="../assets/images/xcorr_vs_time.svg" /></p>
 <p>The same data as a 3D surface:</p>
 <p><img alt="3D surface of xcorr over time and lag (Hilbert envelope)" src="../assets/images/xcorr_3d.svg" /></p>
@@ -1821,6 +1823,10 @@ under <code>docs/assets/images/</code> and rebuilt only on demand. Common consta
     
     
       <script src="../assets/javascripts/bundle.6970bfe9.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg-full.js" type="text/javascript"></script>
       
     
   </body>
