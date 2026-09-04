@@ -3,7 +3,7 @@
 
 """Fast cross-correlation for audio delay estimation, with a Rust core."""
 
-from xcorr_signals._native import (
+from .xcorr_signals import (
     determine_delay_from_average_py,
     determine_delay_vs_time_py,
     xcorr,

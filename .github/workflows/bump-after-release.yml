@@ -1,0 +1,77 @@
+name: bump-after-release
+
+# Tags created by GITHUB_TOKEN do NOT trigger downstream workflows'
+# on:push:tags. workflow_run bypasses that restriction so this
+# workflow fires on every successful release job.
+
+on:
+  workflow_run:
+    workflows: [release]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stamp version back to main
+        run: |
+          set -euo pipefail
+
+          # Resolve CalVer from the HEAD that release.yml just tagged.
+          # The workflow_run event payload points at release.yml's run,
+          # not at HEAD; query the commit via the API for that run.
+          sha="${{ github.event.workflow_run.head_sha }}"
+          version="$(gh api "repos/${{ github.repository }}/commits/${sha}/tags" \
+            --jq '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' \
+            | head -n 1 || true)"
+
+          if [ -z "$version" ]; then
+            echo "No CalVer tag on ${sha} — skipping."
+            exit 0
+          fi
+
+          # Cargo-compatible: strip leading zeros per semver (2026.09.2 -> 2026.9.2).
+          cargo_version="$(printf '%s' "$version" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
+
+          # Idempotent: no-op if already stamped (manual re-run safety).
+          current="$(sed -nE 's/^version = "([^"]*)"$/\1/p' src/xcorr_signals/Cargo.toml | head -n1)"
+          if [ "$current" = "$cargo_version" ]; then
+            echo "Already at ${cargo_version} — nothing to do."
+            exit 0
+          fi
+
+          # Patch Cargo.toml and __about__.py in lockstep. pyproject.toml
+          # keeps `dynamic = ["version"]` so maturin ignores it and falls
+          # back to the stamped Cargo.toml — no patch needed there.
+          sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
+            src/xcorr_signals/Cargo.toml
+          sed -i "s/^__version__ = \".*\"/__version__ = \"${cargo_version}\"/" \
+            src/xcorr_signals/__about__.py
+
+          # Assertions turn any silent patch failure into a job failure.
+          grep -q "^version = \"${cargo_version}\"$" src/xcorr_signals/Cargo.toml
+          grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
+
+          # Skip when this is itself a stamp commit (anti-recursion).
+          if git log -1 --pretty=%B HEAD | grep -q "chore(release): stamp"; then
+            echo "HEAD is a stamp commit — skipping to avoid recursion."
+            exit 0
+          fi
+
+          git add src/xcorr_signals/Cargo.toml src/xcorr_signals/__about__.py
+          git -c user.name="github-actions[bot]" \
+              -c user.email="github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore(release): stamp ${cargo_version}"
+          git push origin HEAD:main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

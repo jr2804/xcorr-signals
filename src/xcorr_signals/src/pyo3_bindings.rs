@@ -201,7 +201,7 @@ fn determine_delay_from_average_py(
 }
 
 #[pymodule]
-fn _native(m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn xcorr_signals(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(xcorr, m)?)?;
     m.add_function(wrap_pyfunction!(determine_delay_vs_time_py, m)?)?;
     m.add_function(wrap_pyfunction!(determine_delay_from_average_py, m)?)?;

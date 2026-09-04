@@ -1,5 +1,8 @@
 [project]
 name = "xcorr-signals"
+# `version` is declared dynamic and resolved from the maturin
+# build environment (which reads Cargo.toml). Keeping a literal here
+# would be ignored by maturin anyway — see rust-pyo3-bindings skill §3.
 dynamic = ["version"]
 description = "Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust"
 readme = "README.md"
@@ -44,7 +47,10 @@ build-backend = "maturin"
 [tool.maturin]
 manifest-path = "src/xcorr_signals/Cargo.toml"
 python-source = "src"
-module-name = "xcorr_signals._native"
+# Explicit: maturin does not derive the Python package dir from [lib]
+# name when manifest-path points elsewhere; without this it looks for
+# src/xcorr-signals (raw project name) and fails.
+module-name = "xcorr_signals"
 include = ["Cargo.toml", "src/**/*.rs"]
 # target/ would otherwise be packaged when building from an extracted
 # sdist (no .gitignore there) — wheel balloons to gigabytes and zip64

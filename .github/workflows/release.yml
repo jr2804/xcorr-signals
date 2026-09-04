@@ -20,7 +20,7 @@ jobs:
 
   release:
 
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release): stamp') }}
 
     runs-on: ubuntu-latest
     permissions:
@@ -97,6 +97,13 @@ jobs:
         cargo_version="$(printf '%s' "$calver" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
         sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
           src/xcorr_signals/Cargo.toml
+        # Also stamp __about__.py so source checkouts / editable installs
+        # report the real version instead of falling back to 0.0.0.
+        sed -i "s/^__version__ = \".*\"/__version__ = \"${cargo_version}\"/" \
+          src/xcorr_signals/__about__.py
+        # Assert both landed — a silent patch failure ships 0.0.0 wheels.
+        grep -q "^version = \"${cargo_version}\"$" src/xcorr_signals/Cargo.toml
+        grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
         uv build
 
     - name: Create release

@@ -10,7 +10,7 @@ authors = ["Jan.Reimes <jan.reimes@head-acoustics.com>"]
 description = "Rust core for cross-correlation delay estimation of audio signals"
 
 [lib]
-name = "_native"
+name = "xcorr_signals"
 crate-type = ["cdylib"]
 
 [dependencies]
