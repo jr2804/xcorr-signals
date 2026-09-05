@@ -876,6 +876,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#multi-channel-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Multi-channel signals
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1604,6 +1615,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#multi-channel-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Multi-channel signals
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1669,10 +1691,12 @@ reference, and track the peak lag per frame:</p>
     <span class="n">reliability_threshold</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">est_ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">lags</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">peak_index</span><span class="p">]</span> <span class="o">/</span> <span class="n">FS</span> <span class="o">*</span> <span class="mi">1000</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">frames</span><span class="p">]</span>
-<span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">est_ms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">reliable_indices</span><span class="p">]</span>
+<span class="c1"># result.frames[c] is the frame list for signal channel c</span>
+<span class="n">est_ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">lags</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">peak_index</span><span class="p">]</span> <span class="o">/</span> <span class="n">FS</span> <span class="o">*</span> <span class="mi">1000</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+<span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">est_ms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">reliable_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 </code></pre></div>
-<p><code>result.frames[i].values</code> holds the full correlation function of frame <code>i</code>,
+<p><code>result.frames[c][i].values</code> holds the correlation function of channel <code>c</code>,
+frame <code>i</code>,
 so you can plot an xcorr-over-time map or compute percentile statistics with
 NumPy:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -1691,7 +1715,7 @@ sharpens the peak before reading it:</p>
     <span class="n">frame_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">),</span>   <span class="c1"># one frame = whole signal</span>
     <span class="n">hop_size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">),</span>
     <span class="n">scaling</span><span class="o">=</span><span class="s2">"normalized"</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="p">)</span>   <span class="c1"># array of shape (channels,) — one delay per signal channel</span>
 </code></pre></div>
 <h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permanent link">&para;</a></h2>
 <table>
@@ -1730,6 +1754,23 @@ autocorrelates at every period, so its peak is ambiguous; a burst has exactly
 one dominant peak per frame. Degradation (nonlinear distortion, band
 limiting, noise above 25 dB SNR) lowers peaks below 100 % — see
 <a href="../../examples/">Examples</a> for a reproducible scenario.</p>
+<h2 id="multi-channel-signals">Multi-channel signals<a class="headerlink" href="#multi-channel-signals" title="Permanent link">&para;</a></h2>
+<p>All functions accept <code>(samples, channels)</code> test signals and correlate every
+column against the reference. <code>xcorr()</code> returns values of shape
+<code>(n_lags, channels)</code>; <code>determine_delay_from_average_py</code> returns one delay per
+channel. To pick the dominant channel for a common time alignment (e.g.
+binaural test against a single reference), use the helper:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">xcorr_signals</span><span class="w"> </span><span class="kn">import</span> <span class="n">determine_delay_multi_channel</span>
+
+<span class="n">best_delay</span><span class="p">,</span> <span class="n">best_channel</span><span class="p">,</span> <span class="n">peak</span> <span class="o">=</span> <span class="n">determine_delay_multi_channel</span><span class="p">(</span>
+    <span class="n">test</span><span class="p">,</span>          <span class="c1"># (samples, channels)</span>
+    <span class="n">reference</span><span class="p">,</span>
+    <span class="n">frame_size</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span>
+    <span class="n">hop_size</span><span class="o">=</span><span class="mi">9600</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Unequal signal/reference lengths are allowed — the shorter side is
+zero-padded to the longer before correlating.</p>
 
 
 

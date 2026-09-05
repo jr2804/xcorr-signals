@@ -1279,6 +1279,23 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+  API reference
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="././" class="md-nav__link md-nav__link--active">
         
   
@@ -1294,6 +1311,37 @@
   
 
       </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#xcorr_signals.determine_delay_multi_channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;determine_delay_multi_channel
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1459,6 +1507,11 @@
                       
                     
                     
+                      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+                      <div class="md-sidebar-button__wrapper">
+                        <label class="md-sidebar-button" for="__toc"></label>
+                      </div>
+                    
                   
                   <div class="md-sidebar__inner">
                     
@@ -1470,6 +1523,25 @@
   
     
   
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#xcorr_signals.determine_delay_multi_channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;determine_delay_multi_channel
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1565,6 +1637,18 @@
 
 
 
+<p><span class="doc-section-title">Functions:</span></p>
+    <ul>
+          <li class="doc-section-item field-body">
+            <b><code><a class="autorefs autorefs-internal" title="&lt;code class=&quot;doc-symbol doc-symbol-heading doc-symbol-function&quot;&gt;&lt;/code&gt;            &lt;span class=&quot;doc doc-object-name doc-function-name&quot;&gt;determine_delay_multi_channel&lt;/span&gt;" href="./#xcorr_signals.determine_delay_multi_channel">determine_delay_multi_channel</a></code></b>
+            –
+            <div class="doc-md-description">
+              <p>Find the dominant cross-correlation peak across all signal channels.</p>
+            </div>
+          </li>
+    </ul>
+
+
 
 
 
@@ -1578,6 +1662,102 @@
 
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="xcorr_signals.determine_delay_multi_channel" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">determine_delay_multi_channel</span>
+
+
+<a href="#xcorr_signals.determine_delay_multi_channel" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">determine_delay_multi_channel</span><span class="p">(</span><span class="n"><span title="xcorr_signals.determine_delay_multi_channel(signals)">signals</span></span><span class="p">:</span> <span class="n"><span title="numpy.typing.NDArray">NDArray</span></span><span class="p">[</span><span class="n"><span title="numpy.floating">floating</span></span><span class="p">],</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(reference)">reference</span></span><span class="p">:</span> <span class="n"><span title="numpy.typing.NDArray">NDArray</span></span><span class="p">[</span><span class="n"><span title="numpy.floating">floating</span></span><span class="p">],</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(frame_size)">frame_size</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">,</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(hop_size)">hop_size</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">,</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(hilbert_envelope)">hilbert_envelope</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(n_lags)">n_lags</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n"><span title="xcorr_signals.determine_delay_multi_channel(scaling)">scaling</span></span><span class="p">:</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></span> <span class="o">=</span> <span class="s1">'normalized'</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#tuple">tuple</a></span><span class="p">[</span><span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#int">int</a></span><span class="p">,</span> <span class="n"><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#float">float</a></span><span class="p">]</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Find the dominant cross-correlation peak across all signal channels.</p>
+<p>Computes the average-xcorr delay for every column of <code>signals</code>
+against the common <code>reference</code> and returns the best (highest-peak)
+result — the delay to apply for a common time alignment.</p>
+<p>Returns <code>(best_delay, best_channel_idx, max_peak_value)</code>.</p>
+
+          <backlinks identifier="xcorr_signals.determine_delay_multi_channel" handler="python" />
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/xcorr_signals/__init__.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">determine_delay_multi_channel</span><span class="p">(</span>
+    <span class="n">signals</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
+    <span class="n">reference</span><span class="p">:</span> <span class="n">NDArray</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floating</span><span class="p">],</span>
+    <span class="n">frame_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">hop_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">hilbert_envelope</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">n_lags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">scaling</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"normalized"</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Find the dominant cross-correlation peak across all signal channels.</span>
+
+<span class="sd">    Computes the average-xcorr delay for every column of ``signals``</span>
+<span class="sd">    against the common ``reference`` and returns the best (highest-peak)</span>
+<span class="sd">    result — the delay to apply for a common time alignment.</span>
+
+<span class="sd">    Returns ``(best_delay, best_channel_idx, max_peak_value)``.</span>
+<span class="sd">    """</span>
+    <span class="n">delays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span>
+        <span class="n">determine_delay_from_average_py</span><span class="p">(</span>
+            <span class="n">signals</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">frame_size</span><span class="p">,</span> <span class="n">hop_size</span><span class="p">,</span>
+            <span class="n">hilbert_envelope</span><span class="o">=</span><span class="n">hilbert_envelope</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="n">n_lags</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="n">scaling</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># Peak value per channel: average xcorr peak heights.</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">determine_delay_vs_time_py</span><span class="p">(</span>
+        <span class="n">signals</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">frame_size</span><span class="p">,</span> <span class="n">hop_size</span><span class="p">,</span>
+        <span class="n">hilbert_envelope</span><span class="o">=</span><span class="n">hilbert_envelope</span><span class="p">,</span> <span class="n">n_lags</span><span class="o">=</span><span class="n">n_lags</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="n">scaling</span><span class="p">,</span>
+        <span class="n">reliability_threshold</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span>  <span class="c1"># keep all frames</span>
+    <span class="p">)</span>
+    <span class="n">peaks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">peak_value</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">])</span> <span class="k">for</span> <span class="n">frames</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">frames</span>
+    <span class="p">])</span>
+    <span class="n">best</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">peaks</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">delays</span><span class="p">[</span><span class="n">best</span><span class="p">]),</span> <span class="n">best</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">peaks</span><span class="p">[</span><span class="n">best</span><span class="p">])</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
 
 
 
