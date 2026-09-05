@@ -27,16 +27,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Resolve CalVer from the HEAD that release.yml just tagged.
-          # The workflow_run event payload points at release.yml's run,
-          # not at HEAD; query the commit via the API for that run.
+          # Resolve the CalVer tag pointing at the commit release.yml ran
+          # on: ls-remote --tags lists annotated tags twice (object and
+          # peeled ^{} entry); the ^{} entry carries the commit SHA.
           sha="${{ github.event.workflow_run.head_sha }}"
-          version="$(gh api "repos/${{ github.repository }}/commits/${sha}/tags" \
-            --jq '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' \
-            | head -n 1 || true)"
+          version="$(git ls-remote --tags origin \
+            | awk -v s="$sha" '$1 == s && $2 ~ /\^\{\}$/ { \
+                sub(/\^\{\}$/, "", $2); sub(/^refs\/tags\//, "", $2); print $2 }' \
+            | head -n 1)"
 
-          if [ -z "$version" ]; then
-            echo "No CalVer tag on ${sha} — skipping."
+          if ! printf '%s' "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "No CalVer tag on ${sha} (version='${version}') — skipping."
             exit 0
           fi
 
