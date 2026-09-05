@@ -3,7 +3,7 @@ name = "xcorr_signals_core"
 # CalVer YYYY.M.N is the single source of truth; the release workflow
 # rewrites this line before running maturin build so the built wheel
 # matches the release tag. Local dev builds get "0.0.0".
-version = "0.0.0"
+version = "2026.9.18"
 edition = "2021"
 license = "MIT"
 authors = ["Jan.Reimes <jan.reimes@head-acoustics.com>"]
