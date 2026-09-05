@@ -41,61 +41,6 @@ from xcorr_signals.cli.args import (
 from xcorr_signals.wavio import WavReader, read_wav, write_wav
 
 
-def _frames(
-    test_source: Path | np.ndarray,
-    ref_source: Path | np.ndarray,
-    frame_size: int,
-    hop_size: int,
-) -> Iterator[tuple[int, np.ndarray, np.ndarray]]:
-    """Yield *(fs, test_frame, ref_frame)* tuples.
-
-    Works for file paths (via :class:`WavReader`) or in-memory arrays.
-    Shorter sources are zero-padded to the common length so every frame
-    has exactly *frame_size* samples.
-    """
-    if isinstance(test_source, (str, Path)):
-        test_reader = WavReader(test_source)
-        ref_reader = WavReader(ref_source)
-        if test_reader.fs != ref_reader.fs:
-            raise typer.BadParameter(
-                f"sample rates differ: test {test_reader.fs} Hz, "
-                f"reference {ref_reader.fs} Hz"
-            )
-        fs = test_reader.fs
-        n = max(test_reader.n_samples, ref_reader.n_samples)
-        for start in range(0, n - frame_size + 1, hop_size):
-            t = test_reader.read_block(start, frame_size)
-            r = ref_reader.read_block(start, frame_size)
-            # pad shorter block to frame_size
-            if t.shape[0] < frame_size:
-                t = np.pad(t, ((0, frame_size - t.shape[0]), (0, 0)))
-            if r.shape[0] < frame_size:
-                r = np.pad(r, ((0, frame_size - r.shape[0]), (0, 0)))
-            yield fs, t, r
-    else:
-        # numpy arrays
-        if test_source.ndim == 1:
-            test_source = test_source.reshape(-1, 1)
-        if ref_source.ndim == 1:
-            ref_source = ref_source.reshape(-1, 1)
-        n = max(test_source.shape[0], ref_source.shape[0])
-        # pad to common length
-        if test_source.shape[0] < n:
-            test_source = np.pad(
-                test_source, ((0, n - test_source.shape[0]), (0, 0))
-            )
-        if ref_source.shape[0] < n:
-            ref_source = np.pad(
-                ref_source, ((0, n - ref_source.shape[0]), (0, 0))
-            )
-        for start in range(0, n - frame_size + 1, hop_size):
-            yield (
-                0,
-                test_source[start : start + frame_size],
-                ref_source[start : start + frame_size],
-            )
-
-
 # --------------------------------------------------------------------------
 # Commands
 # --------------------------------------------------------------------------
@@ -120,12 +65,8 @@ def xcorr_cmd(
     counts: dict[tuple[int, int], int] = {}
     lags_out: np.ndarray | None = None
 
-    for _fs, test_frame, ref_frame in _frames(
-        test_file, reference_file, frame_size, hop_size
-    ):
-        for test_ch, ref_ch in channel_pairs(
-            test_frame.shape[1], ref_frame.shape[1]
-        ):
+    for _fs, test_frame, ref_frame in _frames(test_file, reference_file, frame_size, hop_size):
+        for test_ch, ref_ch in channel_pairs(test_frame.shape[1], ref_frame.shape[1]):
             key = (test_ch, ref_ch)
             lags, values = xcorr(
                 test_frame[:, test_ch - 1 : test_ch],
@@ -134,6 +75,7 @@ def xcorr_cmd(
                 n_lags=n_lags,
                 scaling=scaling,
             )
+            values = values.ravel()
             if key not in acc:
                 acc[key] = values.copy()
                 counts[key] = 1
@@ -152,9 +94,7 @@ def xcorr_cmd(
         avg = total / counts[(test_ch, ref_ch)]
         for lag, val in zip(lags_out, avg, strict=True):
             rows.append([lag, val, test_ch, ref_ch])
-    _write_rows(
-        rows, ["lag", "value", "test_channel", "reference_channel"], output_file
-    )
+    _write_rows(rows, ["lag", "value", "test_channel", "reference_channel"], output_file)
 
 
 def delay_vs_time(
@@ -170,12 +110,8 @@ def delay_vs_time(
 ) -> None:
     """Step 2a: per-frame delay tracking."""
     rows: list[list[object]] = []
-    for i, (fs, test_frame, ref_frame) in enumerate(
-        _frames(test_file, reference_file, frame_size, hop_size)
-    ):
-        for test_ch, ref_ch in channel_pairs(
-            test_frame.shape[1], ref_frame.shape[1]
-        ):
+    for i, (fs, test_frame, ref_frame) in enumerate(_frames(test_file, reference_file, frame_size, hop_size)):
+        for test_ch, ref_ch in channel_pairs(test_frame.shape[1], ref_frame.shape[1]):
             lags, values = xcorr(
                 test_frame[:, test_ch - 1 : test_ch],
                 ref_frame[:, ref_ch - 1],
@@ -183,8 +119,9 @@ def delay_vs_time(
                 n_lags=n_lags,
                 scaling=scaling,
             )
+            values = values.ravel()
             peak = int(np.argmax(values))
-            peak_val = float(values[peak])
+            peak_val = float(values.ravel()[peak])
             rows.append(
                 [
                     i * hop_size / fs,
@@ -225,12 +162,8 @@ def delay_from_average(
     counts: dict[tuple[int, int], int] = {}
     lags_out: np.ndarray | None = None
 
-    for _fs, test_frame, ref_frame in _frames(
-        test_file, reference_file, frame_size, hop_size
-    ):
-        for test_ch, ref_ch in channel_pairs(
-            test_frame.shape[1], ref_frame.shape[1]
-        ):
+    for _fs, test_frame, ref_frame in _frames(test_file, reference_file, frame_size, hop_size):
+        for test_ch, ref_ch in channel_pairs(test_frame.shape[1], ref_frame.shape[1]):
             key = (test_ch, ref_ch)
             lags, values = xcorr(
                 test_frame[:, test_ch - 1 : test_ch],
@@ -239,6 +172,7 @@ def delay_from_average(
                 n_lags=n_lags,
                 scaling=scaling,
             )
+            values = values.ravel()
             if key not in acc:
                 acc[key] = values.copy()
                 counts[key] = 1
@@ -286,12 +220,8 @@ def compensate_delay(
     counts: dict[tuple[int, int], int] = {}
     lags_out: np.ndarray | None = None
 
-    for _fs, test_frame, ref_frame in _frames(
-        test_file, reference_file, frame_size, hop_size
-    ):
-        for test_ch, ref_ch in channel_pairs(
-            test_frame.shape[1], ref_frame.shape[1]
-        ):
+    for _fs, test_frame, ref_frame in _frames(test_file, reference_file, frame_size, hop_size):
+        for test_ch, ref_ch in channel_pairs(test_frame.shape[1], ref_frame.shape[1]):
             key = (test_ch, ref_ch)
             lags, values = xcorr(
                 test_frame[:, test_ch - 1 : test_ch],
@@ -300,6 +230,7 @@ def compensate_delay(
                 n_lags=n_lags,
                 scaling=scaling,
             )
+            values = values.ravel()
             if key not in acc:
                 acc[key] = values.copy()
                 counts[key] = 1
@@ -313,9 +244,7 @@ def compensate_delay(
         typer.secho("no frames processed", fg=typer.colors.RED)
         raise typer.Exit(1)
 
-    pairs = channel_pairs(
-        WavReader(test_file).n_channels, WavReader(reference_file).n_channels
-    )
+    pairs = channel_pairs(WavReader(test_file).n_channels, WavReader(reference_file).n_channels)
     best_delay = 0.0
     best_value = -1.0
     for test_ch, ref_ch in pairs:
@@ -344,6 +273,54 @@ def compensate_delay(
     )
 
 
+def _frames(
+    test_source: Path | np.ndarray,
+    ref_source: Path | np.ndarray,
+    frame_size: int,
+    hop_size: int,
+) -> Iterator[tuple[int, np.ndarray, np.ndarray]]:
+    """Yield *(fs, test_frame, ref_frame)* tuples.
+
+    Works for file paths (via :class:`WavReader`) or in-memory arrays.
+    Shorter sources are zero-padded to the common length so every frame
+    has exactly *frame_size* samples.
+    """
+    if isinstance(test_source, (str, Path)):
+        test_reader = WavReader(test_source)
+        ref_reader = WavReader(ref_source)
+        if test_reader.fs != ref_reader.fs:
+            raise typer.BadParameter(f"sample rates differ: test {test_reader.fs} Hz, reference {ref_reader.fs} Hz")
+        fs = test_reader.fs
+        n = max(test_reader.n_samples, ref_reader.n_samples)
+        for start in range(0, n - frame_size + 1, hop_size):
+            t = test_reader.read_block(start, frame_size)
+            r = ref_reader.read_block(start, frame_size)
+            # pad shorter block to frame_size
+            if t.shape[0] < frame_size:
+                t = np.pad(t, ((0, frame_size - t.shape[0]), (0, 0)))
+            if r.shape[0] < frame_size:
+                r = np.pad(r, ((0, frame_size - r.shape[0]), (0, 0)))
+            yield fs, t, r
+    else:
+        # numpy arrays
+        if test_source.ndim == 1:
+            test_source = test_source.reshape(-1, 1)
+        if ref_source.ndim == 1:
+            ref_source = ref_source.reshape(-1, 1)
+        n = max(test_source.shape[0], ref_source.shape[0])
+        # pad to common length
+        if test_source.shape[0] < n:
+            test_source = np.pad(test_source, ((0, n - test_source.shape[0]), (0, 0)))
+        if ref_source.shape[0] < n:
+            ref_source = np.pad(ref_source, ((0, n - ref_source.shape[0]), (0, 0)))
+        for start in range(0, n - frame_size + 1, hop_size):
+            yield (
+                0,
+                test_source[start : start + frame_size],
+                ref_source[start : start + frame_size],
+            )
+
+
 def _load(test_file: Path, reference_file: Path) -> tuple[int, np.ndarray, np.ndarray]:
     """Read test + reference WAVs, zero-pad to a common length."""
     test, fs_test = read_wav(test_file)
@@ -359,9 +336,7 @@ def _load(test_file: Path, reference_file: Path) -> tuple[int, np.ndarray, np.nd
     return fs_test, test, reference
 
 
-def _write_rows(
-    rows: list[list[object]], headers: list[str], output_file: Path | None
-) -> None:
+def _write_rows(rows: list[list[object]], headers: list[str], output_file: Path | None) -> None:
     """Write CSV rows to a file, or to stdout if no file is given."""
     if output_file:
         with open(output_file, "w", newline="") as handle:

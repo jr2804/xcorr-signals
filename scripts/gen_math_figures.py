@@ -32,6 +32,17 @@ BG = "#EAEAEA"
 FG = "#222222"
 
 
+def main() -> None:
+    style()
+    OUT.mkdir(parents=True, exist_ok=True)
+    _fig_definition()
+    _fig_conv_vs_corr()
+    _fig_hilbert()
+    _fig_ccfht()
+    _fig_scaling()
+    print(f"figures written to {OUT}")
+
+
 def style() -> None:
     plt.rcParams.update(
         {
@@ -48,23 +59,6 @@ def style() -> None:
             "axes.spines.right": False,
         }
     )
-
-
-def _frame(ax: Any, xlabel: str, ylabel: str) -> None:
-    ax.set_xlabel(xlabel)
-    ax.set_ylabel(ylabel)
-    ax.tick_params(colors=FG)
-
-
-def main() -> None:
-    style()
-    OUT.mkdir(parents=True, exist_ok=True)
-    _fig_definition()
-    _fig_conv_vs_corr()
-    _fig_hilbert()
-    _fig_ccfht()
-    _fig_scaling()
-    print(f"figures written to {OUT}")
 
 
 # --------------------------------------------------------------------------
@@ -276,6 +270,12 @@ def _fig_scaling() -> None:
         ax.set_ylim(-1.2 * ma, 1.2 * ma)
     fig.savefig(OUT / "math_scaling.svg", facecolor=BG)
     plt.close(fig)
+
+
+def _frame(ax: Any, xlabel: str, ylabel: str) -> None:
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.tick_params(colors=FG)
 
 
 if __name__ == "__main__":

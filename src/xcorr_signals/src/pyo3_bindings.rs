@@ -9,7 +9,7 @@ use pyo3::types::PyList;
 
 use crate::{
     cross_correlation_function, determine_delay_from_average, determine_delay_vs_time,
-    XCorrError, XCorrFrame, XCorrResult, XCorrScaling,
+    XCorrError, XCorrFrame, XCorrScaling,
 };
 
 /// Extract an f64 2-D view from a NumPy array (float32 or float64).
@@ -42,6 +42,8 @@ fn to_f64_array2<'py>(
 }
 
 /// Extract an f64 1-D view from a NumPy array (float32 or float64).
+/// Single-column 2D arrays (N, 1) are squeezed to 1D — a common shape
+/// after `arr[:, None]` or `arr.reshape(-1, 1)`.
 fn to_f64_array1<'py>(any: &Bound<'py, PyAny>) -> PyResult<Vec<f64>> {
     if let Ok(arr) = any.extract::<PyReadonlyArray1<'py, f64>>() {
         return Ok(arr.as_array().to_owned().into_raw_vec());
@@ -49,8 +51,21 @@ fn to_f64_array1<'py>(any: &Bound<'py, PyAny>) -> PyResult<Vec<f64>> {
     if let Ok(arr) = any.extract::<PyReadonlyArray1<'py, f32>>() {
         return Ok(arr.as_array().iter().map(|v| *v as f64).collect());
     }
+    // Squeeze (N, 1) -> 1D (issue #2).
+    if let Ok(arr) = any.extract::<PyReadonlyArray2<'py, f64>>() {
+        let view = arr.as_array();
+        if view.ncols() == 1 {
+            return Ok(view.column(0).to_owned().into_raw_vec());
+        }
+    }
+    if let Ok(arr) = any.extract::<PyReadonlyArray2<'py, f32>>() {
+        let view = arr.as_array();
+        if view.ncols() == 1 {
+            return Ok(view.column(0).iter().map(|v| *v as f64).collect());
+        }
+    }
     Err(PyTypeError::new_err(
-        "reference must be a float32 or float64 NumPy array (samples,)",
+        "reference must be a float32 or float64 NumPy array (samples,) or (samples, 1)",
     ))
 }
 
@@ -106,7 +121,7 @@ fn xcorr(
     let arr = ndarray::Array2::from_shape_vec((data.len() / ncols, ncols), data)
         .map_err(|_| PyTypeError::new_err("ragged input"))?;
     let scaling = parse_scaling(scaling)?;
-    let frame = cross_correlation_function(
+    let frames = cross_correlation_function(
         arr.view(),
         ArrayView1::from(&ref_),
         hilbert_envelope,
@@ -115,9 +130,20 @@ fn xcorr(
         zero_pad,
     )
     .map_err(map_err)?;
+    // Stack per-channel values: (n_lags, n_channels).
+    let lags = &frames[0].lags;
+    let n_lags_out = lags.len();
+    let mut values = vec![0.0f64; n_lags_out * frames.len()];
+    for (c, f) in frames.iter().enumerate() {
+        for (i, v) in f.values.iter().enumerate() {
+            values[i * frames.len() + c] = *v;
+        }
+    }
+    let values = ndarray::Array2::from_shape_vec((n_lags_out, frames.len()), values)
+        .map_err(|_| PyTypeError::new_err("internal: value stacking failed"))?;
     Ok((
-        PyArray1::from_vec(py, frame.lags).into_any().unbind(),
-        PyArray1::from_vec(py, frame.values).into_any().unbind(),
+        PyArray1::from_vec(py, lags.clone()).into_any().unbind(),
+        values.into_pyarray(py).into_any().unbind(),
     ))
 }
 
@@ -139,7 +165,7 @@ fn determine_delay_vs_time_py(
     let arr = ndarray::Array2::from_shape_vec((data.len() / ncols, ncols), data)
         .map_err(|_| PyTypeError::new_err("ragged input"))?;
     let scaling = parse_scaling(scaling)?;
-    let result: XCorrResult = determine_delay_vs_time(
+    let channels = determine_delay_vs_time(
         arr.view(),
         ArrayView1::from(&ref_),
         frame_size,
@@ -151,24 +177,30 @@ fn determine_delay_vs_time_py(
     )
     .map_err(map_err)?;
 
-    let frames: Vec<PyXCorrFrame> = result
-        .frames
-        .into_iter()
-        .map(|f: XCorrFrame| PyXCorrFrame {
-            lags: PyArray1::from_vec(py, f.lags).into_any().unbind(),
-            values: PyArray1::from_vec(py, f.values).into_any().unbind(),
-            peak_index: f.peak_index,
-            peak_value: f.peak_value,
-        })
-        .collect();
-    let frames_list = PyList::new(py, frames)?.into_any().unbind();
-    let reliable = PyArray1::from_vec(
-        py,
-        result.reliable_indices.iter().map(|i| *i as i64).collect(),
-    )
-    .into_any()
-    .unbind();
-    Ok(PyXCorrResult { frames: frames_list, reliable_indices: reliable })
+    let n_ch = channels.len();
+    // frames[c] is a PyList of PyXCorrFrame dicts for channel c.
+    let mut py_frames: Vec<Py<PyAny>> = Vec::with_capacity(n_ch);
+    let mut py_reliable: Vec<Py<PyAny>> = Vec::with_capacity(n_ch);
+    for ch in &channels {
+        let frames: Vec<PyXCorrFrame> = ch
+            .frames
+            .iter()
+            .map(|f| PyXCorrFrame {
+                lags: PyArray1::from_vec(py, f.lags.clone()).into_any().unbind(),
+                values: PyArray1::from_vec(py, f.values.clone()).into_any().unbind(),
+                peak_index: f.peak_index,
+                peak_value: f.peak_value,
+            })
+            .collect();
+        py_frames.push(PyList::new(py, frames)?.into_any().unbind());
+        py_reliable.push(
+            PyArray1::from_vec(py, ch.reliable_indices.iter().map(|i| *i as i64).collect())
+                .into_any().unbind(),
+        );
+    }
+    let py_frames_list = PyList::new(py, py_frames)?.into_any().unbind();
+    let py_reliable_list = PyList::new(py, py_reliable)?.into_any().unbind();
+    Ok(PyXCorrResult { frames: py_frames_list, reliable_indices: py_reliable_list })
 }
 
 #[pyfunction]
@@ -182,13 +214,13 @@ fn determine_delay_from_average_py(
     hilbert_envelope: bool,
     n_lags: Option<usize>,
     scaling: &str,
-) -> PyResult<f64> {
+) -> PyResult<Py<PyAny>> {
     let (data, ncols) = to_f64_array2(&signals, py)?;
     let ref_ = to_f64_array1(&reference)?;
     let arr = ndarray::Array2::from_shape_vec((data.len() / ncols, ncols), data)
         .map_err(|_| PyTypeError::new_err("ragged input"))?;
     let scaling = parse_scaling(scaling)?;
-    determine_delay_from_average(
+    let delays = determine_delay_from_average(
         arr.view(),
         ArrayView1::from(&ref_),
         frame_size,
@@ -197,7 +229,8 @@ fn determine_delay_from_average_py(
         n_lags,
         scaling,
     )
-    .map_err(map_err)
+    .map_err(map_err)?;
+    Ok(PyArray1::from_vec(py, delays).into_any().unbind())
 }
 
 #[pymodule]

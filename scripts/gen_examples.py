@@ -59,12 +59,12 @@ def main() -> None:
         hilbert_envelope=True,
         reliability_threshold=0.3,
     )
-    est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames])
-    peaks = np.array([f.peak_value for f in result.frames])
+    est_ms = np.array([f.lags[f.peak_index] / FS * 1000 for f in result.frames[0]])
+    peaks = np.array([f.peak_value for f in result.frames[0]])
     stats = fig_delay_percentiles(true_ms, est_ms)
 
     print("figures written to", OUT)
-    print("reliable frames:", len(result.reliable_indices), "/", len(result.frames))
+    print("reliable frames:", len(result.reliable_indices[0]), "/", len(result.frames[0]))
     print("delay ms: P5={p5:+.2f} P50={p50:+.2f} P95={p95:+.2f} max|err|={max_abs:.3f}".format(**stats))
     print(f"peak: {peaks.min():.3f} .. {peaks.max():.3f} (P5={np.percentile(peaks, 5):.3f} P95={np.percentile(peaks, 95):.3f})")
 
@@ -98,6 +98,7 @@ def fig_signal(ref: np.ndarray, test: np.ndarray, delay: int) -> None:
 
 def fig_xcorr_average(ref: np.ndarray, test: np.ndarray, delay_s: float) -> None:
     lags, values = xcorr(test.reshape(-1, 1), ref, hilbert_envelope=True, scaling="normalized")
+    values = values.ravel()
     fig, ax = plt.subplots(figsize=(5.7, 3.5), constrained_layout=True)
     ax.plot(lags / FS * 1000, values, lw=0.9, color="#0072B2")
     imax = int(np.argmax(values))
@@ -130,8 +131,9 @@ def fig_xcorr_vs_time(ref: np.ndarray, test: np.ndarray, three_d: bool) -> None:
         hilbert_envelope=True,
         reliability_threshold=0.3,
     )
-    lags = result.frames[0].lags / FS * 1000
-    matrix = np.stack([f.values for f in result.frames])  # (segments, lags)
+    frames0 = result.frames[0]  # list of frame dicts per channel
+    lags = frames0[0].lags / FS * 1000
+    matrix = np.stack([f.values for f in frames0])  # (segments, lags), single channel
     t_s = (np.arange(matrix.shape[0]) + 0.5) * seg_len / FS
 
     if three_d:

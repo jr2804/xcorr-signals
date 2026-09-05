@@ -65,8 +65,8 @@ delay = determine_delay_from_average_py(
     test.reshape(-1, 1), reference,
     frame_size=n, hop_size=n, n_lags=1000, scaling="normalized"
 )
-print(f"Estimated delay: {delay} samples ({delay/fs*1000:.3f} ms)")
-# → Estimated delay: 240 samples (5.000 ms)
+print(f"Estimated delay: {delay[0]} samples ({delay[0]/fs*1000:.3f} ms)")
+# → Estimated delay: 240.0 samples (5.000 ms)  (array — one value per channel)
 ```
 
 ### CLI

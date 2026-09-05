@@ -35,11 +35,13 @@ result = determine_delay_vs_time_py(
     reliability_threshold=0.3,
 )
 
-est_ms = [f.lags[f.peak_index] / FS * 1000 for f in result.frames]
-kept = [est_ms[i] for i in result.reliable_indices]
+# result.frames[c] is the frame list for signal channel c
+est_ms = [f.lags[f.peak_index] / FS * 1000 for f in result.frames[0]]
+kept = [est_ms[i] for i in result.reliable_indices[0]]
 ```
 
-`result.frames[i].values` holds the full correlation function of frame `i`,
+`result.frames[c][i].values` holds the correlation function of channel `c`,
+frame `i`,
 so you can plot an xcorr-over-time map or compute percentile statistics with
 NumPy:
 
@@ -64,7 +66,7 @@ delay = determine_delay_from_average_py(
     frame_size=len(test),   # one frame = whole signal
     hop_size=len(test),
     scaling="normalized",
-)
+)   # array of shape (channels,) — one delay per signal channel
 ```
 
 ## Parameters
@@ -84,3 +86,25 @@ autocorrelates at every period, so its peak is ambiguous; a burst has exactly
 one dominant peak per frame. Degradation (nonlinear distortion, band
 limiting, noise above 25 dB SNR) lowers peaks below 100 % — see
 [Examples](../examples/index.md) for a reproducible scenario.
+
+## Multi-channel signals
+
+All functions accept `(samples, channels)` test signals and correlate every
+column against the reference. `xcorr()` returns values of shape
+`(n_lags, channels)`; `determine_delay_from_average_py` returns one delay per
+channel. To pick the dominant channel for a common time alignment (e.g.
+binaural test against a single reference), use the helper:
+
+```python
+from xcorr_signals import determine_delay_multi_channel
+
+best_delay, best_channel, peak = determine_delay_multi_channel(
+    test,          # (samples, channels)
+    reference,
+    frame_size=9600,
+    hop_size=9600,
+)
+```
+
+Unequal signal/reference lengths are allowed — the shorter side is
+zero-padded to the longer before correlating.

@@ -134,31 +134,32 @@ pub fn cross_correlation_function(
     n_lags: Option<usize>,
     scaling: XCorrScaling,
     zero_pad: bool,
-) -> Result<XCorrFrame, XCorrError> {
+) -> Result<Vec<XCorrFrame>, XCorrError> {
     let _ = zero_pad;
     let (nbr_samples, nbr_channels) = (signals.nrows(), signals.ncols());
     if nbr_samples == 0 || reference.is_empty() {
         return Err(XCorrError::EmptyInput);
     }
-    if nbr_samples != reference.len() {
-        return Err(XCorrError::DimensionMismatch);
-    }
-    if let Some(n) = n_lags {
-        if n == 0 || n > nbr_samples {
-            return Err(XCorrError::InvalidLags(n));
+    // Unequal lengths: zero-pad the shorter side to the longer (issue #2).
+    let n = nbr_samples.max(reference.len());
+    if let Some(k) = n_lags {
+        if k == 0 || k > n {
+            return Err(XCorrError::InvalidLags(k));
         }
     }
 
-    let xcorr_len = 2 * nbr_samples - 1;
-    let tau0 = nbr_samples - 1;
+    let xcorr_len = 2 * n - 1;
+    let tau0 = n - 1;
     let n_lags = n_lags.unwrap_or(tau0).min(tau0);
 
     let mut ysig = reference.to_vec();
+    ysig.resize(n, 0.0);
     zscore(&mut ysig);
 
-    let mut acc = vec![0.0f64; xcorr_len];
+    let mut frames = Vec::with_capacity(nbr_channels);
     for ch in signals.columns() {
         let mut xsig = ch.to_vec();
+        xsig.resize(n, 0.0);
         zscore(&mut xsig);
 
         let mut raw = fft_xcorr(&xsig, &ysig);
@@ -191,25 +192,21 @@ pub fn cross_correlation_function(
             }
         }
 
-        for (a, v) in acc.iter_mut().zip(raw) {
-            *a += v;
-        }
+        // raw[i] corresponds to lag (i - tau0). Cut to window [-n_lags, +n_lags].
+        let values: Vec<f64> = raw[tau0 - n_lags..=tau0 + n_lags].to_vec();
+        let lags: Vec<f64> = (-(n_lags as i64)..=n_lags as i64).map(|t| t as f64).collect();
+        let peak_index = values
+            .iter()
+            .enumerate()
+            .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+            .map(|(i, _)| i)
+            .unwrap_or(n_lags);
+        let peak_value = values[peak_index];
+
+        frames.push(XCorrFrame { lags, values, peak_index, peak_value });
     }
-    let inv_c = 1.0 / nbr_channels as f64;
-    acc.iter_mut().for_each(|v| *v *= inv_c);
 
-    // acc[i] corresponds to lag (i - tau0). Cut to window [-n_lags, +n_lags].
-    let values: Vec<f64> = acc[tau0 - n_lags..=tau0 + n_lags].to_vec();
-    let lags: Vec<f64> = (-(n_lags as i64)..=n_lags as i64).map(|t| t as f64).collect();
-    let peak_index = values
-        .iter()
-        .enumerate()
-        .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-        .map(|(i, _)| i)
-        .unwrap_or(n_lags);
-    let peak_value = values[peak_index];
-
-    Ok(XCorrFrame { lags, values, peak_index, peak_value })
+    Ok(frames)
 }
 
 pub fn determine_delay_vs_time(
@@ -221,30 +218,36 @@ pub fn determine_delay_vs_time(
     n_lags: Option<usize>,
     scaling: XCorrScaling,
     reliability_threshold: f64,
-) -> Result<XCorrResult, XCorrError> {
+) -> Result<Vec<XCorrResult>, XCorrError> {
     if frame_size == 0 || hop_size == 0 {
         return Err(XCorrError::InvalidFrame(0));
     }
     let n = signals.nrows();
-    let mut frames = Vec::new();
-    let mut reliable = Vec::new();
+    let n_ch = signals.ncols();
+    let mut channels: Vec<XCorrResult> = (0..n_ch)
+        .map(|_| XCorrResult { frames: Vec::new(), reliable_indices: Vec::new() })
+        .collect();
     let mut start = 0;
     while start + frame_size <= n {
         let sig = signals.slice(ndarray::s![start..start + frame_size, ..]);
         let ref_ = reference.slice(ndarray::s![start..start + frame_size]);
-        let frame = cross_correlation_function(
+        // One frame per channel: frames[c] is channel c's correlation.
+        let frames = cross_correlation_function(
             sig, ref_, hilbert_envelope, n_lags, scaling, false,
         )?;
-        if frame.peak_value >= reliability_threshold {
-            reliable.push(frames.len());
+        for (c, frame) in frames.into_iter().enumerate() {
+            let ch = &mut channels[c];
+            if frame.peak_value >= reliability_threshold {
+                ch.reliable_indices.push(ch.frames.len());
+            }
+            ch.frames.push(frame);
         }
-        frames.push(frame);
         start += hop_size;
     }
-    if frames.is_empty() {
+    if channels.first().map_or(true, |c| c.frames.is_empty()) {
         return Err(XCorrError::InvalidFrame(frame_size));
     }
-    Ok(XCorrResult { frames, reliable_indices: reliable })
+    Ok(channels)
 }
 
 pub fn determine_delay_from_average(
@@ -255,27 +258,32 @@ pub fn determine_delay_from_average(
     hilbert_envelope: bool,
     n_lags: Option<usize>,
     scaling: XCorrScaling,
-) -> Result<f64, XCorrError> {
-    let result = determine_delay_vs_time(
+) -> Result<Vec<f64>, XCorrError> {
+    let channels = determine_delay_vs_time(
         signals, reference, frame_size, hop_size,
         hilbert_envelope, n_lags, scaling, f64::NEG_INFINITY,
     )?;
-    let len = result.frames[0].values.len();
-    let mut avg = vec![0.0f64; len];
-    for f in &result.frames {
-        for (a, v) in avg.iter_mut().zip(&f.values) {
-            *a += v;
-        }
-    }
-    let inv = 1.0 / result.frames.len() as f64;
-    avg.iter_mut().for_each(|v| *v *= inv);
-    let peak_index = avg
+    Ok(channels
         .iter()
-        .enumerate()
-        .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
-        .map(|(i, _)| i)
-        .unwrap_or(0);
-    Ok(result.frames[0].lags[peak_index])
+        .map(|result| {
+            let len = result.frames[0].values.len();
+            let mut avg = vec![0.0f64; len];
+            for f in &result.frames {
+                for (a, v) in avg.iter_mut().zip(&f.values) {
+                    *a += v;
+                }
+            }
+            let inv = 1.0 / result.frames.len() as f64;
+            avg.iter_mut().for_each(|v| *v *= inv);
+            let peak_index = avg
+                .iter()
+                .enumerate()
+                .max_by(|a, b| a.1.partial_cmp(b.1).unwrap())
+                .map(|(i, _)| i)
+                .unwrap_or(0);
+            result.frames[0].lags[peak_index]
+        })
+        .collect())
 }
 
 pub(crate) struct XorShift64(u64);
@@ -315,11 +323,13 @@ mod tests {
         let sig = noise_burst(128, 16, 42);
         let ref_ = shifted_reference(&sig, 2);
         let sig_arr = Array2::from_shape_vec((128, 1), sig.clone()).unwrap();
-        let frame = cross_correlation_function(
+        let frames = cross_correlation_function(
             sig_arr.view(),
             ndarray::ArrayView1::from(&ref_),
             false, Some(16), XCorrScaling::Normalized, false,
         ).unwrap();
+        assert_eq!(frames.len(), 1);
+        let frame = &frames[0];
         assert!((frame.lags[frame.peak_index] - 2.0).abs() < 1e-9);
         assert!(frame.peak_value > 0.9);
     }
@@ -338,11 +348,12 @@ mod tests {
     fn test_zero_delay_identity() {
         let sig = noise_burst(128, 16, 7);
         let sig_arr = Array2::from_shape_vec((128, 1), sig.clone()).unwrap();
-        let frame = cross_correlation_function(
+        let frames = cross_correlation_function(
             sig_arr.view(),
             ndarray::ArrayView1::from(&sig),
             false, Some(16), XCorrScaling::Normalized, false,
         ).unwrap();
+        let frame = &frames[0];
         assert!(frame.lags[frame.peak_index].abs() < 1e-9);
         assert!((frame.peak_value - 1.0).abs() < 1e-9);
     }
@@ -358,21 +369,23 @@ mod tests {
                 ndarray::ArrayView1::from(&ref_),
                 256, 256, false, Some(32), XCorrScaling::Normalized,
             ).unwrap();
-            assert!((d - delay as f64).abs() < 1e-9);
+            assert!((d[0] - delay as f64).abs() < 1e-9);
         }
     }
 
     #[test]
-    fn test_dimension_mismatch_rejected() {
+    fn test_dimension_mismatch_pads_shorter_side() {
+        // Issue #2: unequal lengths are auto-padded with zeros.
         let sig = noise_burst(64, 8, 1);
         let other = noise_burst(32, 8, 2);
         let sig_arr = Array2::from_shape_vec((64, 1), sig).unwrap();
-        let err = cross_correlation_function(
+        let frames = cross_correlation_function(
             sig_arr.view(),
             ndarray::ArrayView1::from(&other),
             false, None, XCorrScaling::None, false,
-        );
-        assert!(matches!(err, Err(XCorrError::DimensionMismatch)));
+        ).unwrap();
+        assert_eq!(frames.len(), 1);
+        assert_eq!(frames[0].values.len(), 2 * 64 - 1);
     }
 
     #[test]
@@ -381,15 +394,17 @@ mod tests {
         let sig = noise_burst(n, 32, 9);
         let ref_ = shifted_reference(&sig, 5);
         let sig_arr = Array2::from_shape_vec((n, 1), sig.clone()).unwrap();
-        let result = determine_delay_vs_time(
+        let channels = determine_delay_vs_time(
             sig_arr.view(),
             ndarray::ArrayView1::from(&ref_),
             256, 256, false, Some(32), XCorrScaling::Normalized, 0.5,
         ).unwrap();
-        assert_eq!(result.frames.len(), 2);
-        assert_eq!(result.reliable_indices.len(), 2);
-        for f in &result.frames {
+        assert_eq!(channels.len(), 1);
+        assert_eq!(channels[0].frames.len(), 2);
+        assert_eq!(channels[0].reliable_indices.len(), 2);
+        for f in &channels[0].frames {
             assert!((f.lags[f.peak_index] - 5.0).abs() < 1e-9);
         }
     }
 }
+
