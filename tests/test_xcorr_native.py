@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 from xcorr_signals import (
+    XCorrScaling,
     determine_delay_from_average_py,
     determine_delay_multi_channel,
     determine_delay_vs_time_py,
@@ -226,6 +227,59 @@ def test_determine_delay_multi_channel_best() -> None:
     assert best_ch == 1
     assert best_delay == pytest.approx(5.0)
     assert 0.0 < peak <= 1.0
+
+
+def test_determine_delay_multi_channel_pairwise_stereo() -> None:
+    # Issue #4: stereo-vs-stereo -> pairwise (deg_i, ref_i), best pair wins.
+    n = 1024
+    ref_ch0 = noise_burst(n, 32, seed=11)
+    ref_ch1 = noise_burst(n, 32, seed=12)
+    deg_ch0 = shifted_reference(ref_ch0, 6)   # deg_i = ref_i delayed by 6
+    deg_ch1 = shifted_reference(ref_ch1, 10)  # stronger correlation expected
+    best_delay, best_ch, peak = determine_delay_multi_channel(
+        np.column_stack([deg_ch0, deg_ch1]),
+        np.column_stack([ref_ch0, ref_ch1]),
+        frame_size=512, hop_size=512, n_lags=32,
+    )
+    assert best_ch in (0, 1)
+    assert 0.0 < peak <= 1.0
+    # shifted_reference(ref, delay) -> ref[k] = sig[k+delay]:
+    # deg leads ref, xcorr peak lands at lag = -delay.
+    expected = {0: -6.0, 1: -10.0}
+    assert best_delay == pytest.approx(expected[best_ch])
+
+
+def test_determine_delay_multi_channel_mismatch_rejected() -> None:
+    with pytest.raises(ValueError, match="channel mismatch"):
+        determine_delay_multi_channel(
+            np.zeros((128, 2)), np.zeros((128, 3)),
+            frame_size=128, hop_size=128, n_lags=8,
+        )
+
+
+# --- Issue #5: XCorrScaling enum -------------------------------------------
+
+def test_xcorr_scaling_enum_and_string_equivalent() -> None:
+    sig = noise_burst(256, 16, seed=13)
+    ref = shifted_reference(sig, 2)
+    lags_e, vals_e = xcorr(sig.reshape(-1, 1), ref, scaling=XCorrScaling.NORMALIZED)
+    lags_s, vals_s = xcorr(sig.reshape(-1, 1), ref, scaling="normalized")
+    np.testing.assert_allclose(vals_e, vals_s)
+
+
+def test_xcorr_scaling_enum_members() -> None:
+    # XCorrScaling members are pyo3 complex-enum values:
+    # verify each variant is accessible via its Python-level name.
+    variants = {"NORMALIZED", "COEFF", "BIASED", "UNBIASED", "NONE"}
+    for member in (XCorrScaling.NORMALIZED, XCorrScaling.COEFF, XCorrScaling.BIASED,
+                   XCorrScaling.UNBIASED, XCorrScaling.NONE):
+        assert str(member).split(".")[-1] in variants
+
+
+def test_xcorr_scaling_enum_invalid_string_rejected() -> None:
+    sig = noise_burst(128, 8, seed=14)
+    with pytest.raises(ValueError, match="invalid scaling mode"):
+        xcorr(sig.reshape(-1, 1), sig, scaling="norm")
 
 
 def noise_burst(n: int = 128, lead: int = 16, burst: np.ndarray | None = None, seed: int = 42) -> np.ndarray:

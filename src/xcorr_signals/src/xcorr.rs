@@ -4,12 +4,20 @@ use ndarray::{ArrayView1, ArrayView2};
 use realfft::{num_complex::Complex, RealFftPlanner};
 use rustfft::FftPlanner;
 
+use pyo3::pyclass;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[pyclass(eq, eq_int, module = "xcorr_signals")]
 pub enum XCorrScaling {
+    #[pyo3(name = "NORMALIZED")]
     Normalized,
+    #[pyo3(name = "COEFF")]
     Coeff,
+    #[pyo3(name = "BIASED")]
     Biased,
+    #[pyo3(name = "UNBIASED")]
     Unbiased,
+    #[pyo3(name = "NONE")]
     None,
 }
 
