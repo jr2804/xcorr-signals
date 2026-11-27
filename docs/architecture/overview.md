@@ -11,7 +11,7 @@ flowchart LR
         CLI["Typer CLI"] --> API["Package API"]
         NP["NumPy arrays\n(float32 / float64)"] --> API
     end
-    subgraph native["Rust — xcorr_signals._native (PyO3)"]
+    subgraph native["Rust — xcorr_signals.xcorr_signals (PyO3)"]
         BIND["pyo3_bindings.rs"] --> CORE["xcorr.rs"]
     end
     API -->|"ndarray views"| BIND
@@ -73,8 +73,11 @@ always float64.
 | Module | Responsibility |
 | ------ | -------------- |
 | `src/xcorr_signals/src/xcorr.rs` | Correlation, scaling, Hilbert envelope, delay modes, unit tests |
-| `src/xcorr_signals/src/pyo3_bindings.rs` | NumPy conversion, scaling parsing, `#[pyclass]` result types |
+| `src/xcorr_signals/src/pyo3_bindings.rs` | NumPy conversion, scaling parsing/`PyXCorrScaling`, `#[pyclass]` types |
 | `src/xcorr_signals/cli/` | Typer app, argument definitions, pipeline commands (xcorr, delay-vs-time, delay-from-average, compensate-delay) |
 | `src/xcorr_signals/wavio.py` | WAV read/write (PCM + IEEE float) |
 | `src/xcorr_signals/channels.py` | Channel pairing rules (N×1, M×M) |
 | `scripts/gen_examples.py` | Deterministic example figures for these docs |
+
+The PyO3/NumPy layer is behind the default `python` feature. Building with
+`--no-default-features` produces a pure-Rust `rlib` for use as a dependency.

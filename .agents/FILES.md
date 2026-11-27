@@ -15,15 +15,17 @@ Kept compact — agents hallucinate less when they know where definitions live.
 | ---------------------- | --------------------------------------------------------------- | ----------------------------------------------- |
 | Package source root    | `src/xcorr_signals/`  | `__init__.py`, `__about__.py` (version)         |
 | Rust core              | `src/xcorr_signals/src/`  | `xcorr.rs` (DSP), `pyo3_bindings.rs` (bindings) |
-| Rust crate manifest    | `src/xcorr_signals/Cargo.toml`  | lib name `_native`, crate-type `cdylib`         |
-| Native module name     | `xcorr_signals._native`  | set in `[tool.maturin]` in `pyproject.toml`      |
+| Rust crate manifest    | `src/xcorr_signals/Cargo.toml`  | lib name `xcorr_signals`, crate-type `cdylib` + `rlib` |
+| Native module name     | `xcorr_signals.xcorr_signals`  | `module-name` in `[tool.maturin]` (`pyproject.toml`) |
 | CLI entry points       | `src/xcorr_signals/cli/`            | `app.py` (Typer app), `args.py`, `commands.py`  |
 | Test suite             | `tests/`                                                        | `test_*.py`, `conftest.py`                      |
 | Project metadata       | `pyproject.toml`                                                | `[project]`, `[tool.pytest.ini_options]`, `[tool.maturin]` |
 | Linter/formatter       | `ruff.toml`                                                     | Ruff rule selection, line length                |
 | Type checker           | `ty.toml`                                                       | ty strictness                                   |
 | Markdown linter        | `.config/rumdl.toml`                                            | `line-length`, `flavor`, disabled rules         |
+| Python structural sorter | `.config/pyreorder.toml`                                      | section order, `stepdown` functions, transforms |
 | mise tasks             | `.config/mise/config.toml` + `.config/mise/conf.d/*.toml`       | `[tasks.dev]`, `[tasks.test]`, ...              |
+| Issue tracker (beads)  | `.beads/config.yaml`                                            | prefix `xcorr-signals`, database `xcorr_signals`, sync remote |
 | Copier answers         | `.copier-answers.yml`                                           | Template version + answers (regenerated)        |
 | Pre-commit config      | `.pre-commit-config.yaml`                                       | Hook list                                       |
 | MCP server config      | `.config/mise/conf.d/mcp.toml`                                  | `[tasks.add-mcp-servers]`, tool list            |

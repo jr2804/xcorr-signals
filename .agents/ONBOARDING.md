@@ -14,7 +14,7 @@ mise dev        # install dependencies (uv sync --dev)
 mise build-rust # build Rust extension (maturin develop)
 mise test       # run pytest with coverage
 mise lint       # ruff + ty + codespell
-mise format     # ruff format + isort + clean-sort
+mise format     # ruff format + isort + pyreorder
 mise all        # test + lint + format in one pass
 ```
 
@@ -26,7 +26,7 @@ mise all        # test + lint + format in one pass
 | `.agents/POLICIES.md` | Boundaries, priorities, verification |
 | `.agents/FILES.md` | Source-of-truth locations for this package |
 | `pyproject.toml` | Dependencies, pytest config, maturin build |
-| `src/xcorr_signals/Cargo.toml` | Rust crate manifest (single cdylib crate) |
+| `src/xcorr_signals/Cargo.toml` | Rust crate manifest (`cdylib` + `rlib`) |
 | `src/xcorr_signals/src/` | Rust core: `xcorr.rs` (DSP), `pyo3_bindings.rs` (bindings) |
 | `.copier-answers.yml` | Template answers (regenerated on `copier update`) |
 
@@ -34,7 +34,7 @@ mise all        # test + lint + format in one pass
 
 - **`src/xcorr_signals/`** — primary package source (src layout)
 - **`src/xcorr_signals/src/`** — Rust core: `xcorr.rs` (xcorr/DSP algorithms), `pyo3_bindings.rs` (PyO3 bindings)
-- **`src/xcorr_signals/Cargo.toml`** — Rust crate manifest (built as `xcorr_signals._native`)
+- **`src/xcorr_signals/Cargo.toml`** — Rust crate manifest (built as `xcorr_signals.xcorr_signals`)
 - **`tests/`** — pytest suite (100% coverage gate)
 - **`src/xcorr_signals/cli/`** — Typer CLI
 - **`docs/`** — Zensical / MkDocs Material documentation
@@ -50,6 +50,8 @@ uv run maturin develop --release  # release build (for benchmarks)
 ```
 
 Rust unit tests: `cargo test --lib` (run from `src/xcorr_signals/`).
+Pure-Rust build without PyO3: `cargo build --no-default-features`; core tests:
+`cargo test --no-default-features`.
 
 ## Where to dig deeper
 

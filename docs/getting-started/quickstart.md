@@ -12,7 +12,7 @@ For development from a checkout, build the extension first, then run the test su
 
 ```bash
 mise run dev          # uv sync --dev (installs maturin)
-mise run build-rust   # maturin develop -> builds xcorr_signals._native
+mise run build-rust   # maturin develop -> builds xcorr_signals.xcorr_signals
 mise run test         # pytest with coverage
 ```
 

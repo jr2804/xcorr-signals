@@ -12,7 +12,7 @@ requires a Rust implementation.
 ## Decision
 
 Single Rust crate (`xcorr_signals_core`) compiled as a `cdylib` extension
-module `xcorr_signals._native`, exposed through PyO3/maturin. Python stays
+module `xcorr_signals.xcorr_signals`, exposed through PyO3/maturin. Python stays
 the primary artifact: the package installs via pip, the CLI is Typer, and
 all public types are NumPy arrays. Layout follows the single-crate default:
 `xcorr.rs` holds the pure DSP, `pyo3_bindings.rs` is a thin adapter.
@@ -23,6 +23,11 @@ all public types are NumPy arrays. Layout follows the single-crate default:
 - Core testable without Python (`cargo test`); bindings stay thin.
 - Contributors need a Rust toolchain (mise provides it); a second build
   system (Cargo) sits next to uv.
-- Versioning: Cargo.toml keeps `version = "0.0.0"`; the release workflow
-  rewrites it so the wheel matches the sdist produced by
-  uv-dynamic-versioning.
+- Versioning: Cargo.toml holds the release version; `release.yml` stamps it
+  from the CalVer tag before `uv build` so the wheel matches the tagged
+  source.
+
+**Amendment (2026-11-27)**: the crate also emits an `rlib`, and the PyO3
+bindings sit behind the `python` feature. Consumers using
+`default-features = false` therefore get the pure-Rust core without a Python
+dependency (GitHub issue #6).
