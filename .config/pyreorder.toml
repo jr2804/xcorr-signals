@@ -1,4 +1,4 @@
-# clean-sort configuration. See https://codeberg.org/jr2804/clean-sort
+# pyreorder configuration. See https://github.com/jr2804/pyreorder
 
 [module]
 # Ordered list of section buckets; top-level statements are grouped into these.
@@ -31,12 +31,12 @@ hoist_inline_imports = true
 remove_type_checking = true
 
 [cli]
-# Exit non-zero when csort run modifies files (pre-commit/CI friendly).
+# Exit non-zero when pyreorder run modifies files (pre-commit/CI friendly).
 fail_on_changed = false
 # Content-hash skip cache: avoids re-parsing already-sorted files.
 # cache = true
-# Cache directory (default: ~/.cache/csort/<project-slug>/cache.json).
-# cache_dir = ".csort-cache"
+# Cache directory (default: ~/.cache/pyreorder/<project-slug>/cache.json).
+# cache_dir = ".pyreorder-cache"
 # Parallel workers: 0 = serial, negative = auto (int(0.75*cpu_count())).
 jobs = -1
 # Parallel backend: 'process' (multiprocessing) or 'thread' (threading).

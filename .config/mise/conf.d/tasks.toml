@@ -29,9 +29,9 @@ description = "Run spell checker (codespell)"
 run = "codespell src/ tests/"
 
 [tasks.format]
-description = "Format code (ruff, isort, clean-sort)"
+description = "Format code (ruff, isort, pyreorder)"
 run = [
-	"csort run src/ tests/ scripts/ --config .config/csort.toml",
+	"pyreorder run src/ tests/ scripts/ --config .config/pyreorder.toml",
 	"ruff format src/ tests/",
 	"ruff check src/ tests/ --select I --fix",
 ]

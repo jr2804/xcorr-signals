@@ -111,7 +111,7 @@ rationale. Cut first; split the subtree only as a last resort.
 mise all        # test + lint + format (composite task)
 mise test       # pytest with coverage gate (100%)
 mise lint       # ruff + ty + codespell
-mise format     # ruff format + isort + clean-sort
+mise format     # ruff format + isort + pyreorder
 mise format-md  # rumdl over docs/, .agents/, ./ (Markdown only)
 ```
 
