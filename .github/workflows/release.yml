@@ -101,7 +101,12 @@ jobs:
           grep -A1 '^name = "xcorr_signals_core"$' src/xcorr_signals/Cargo.lock \
             | grep -q "^version = \"${cargo_version}\"$"
           grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
-          uv build
+          # `uv build` tags wheels `linux_x86_64`, which PyPI rejects. Build
+          # explicitly for the oldest glibc the Rust core supports.
+          rm -rf dist
+          uvx maturin@1.16.0 build --release --locked \
+            --compatibility manylinux_2_34 --out dist
+          uvx maturin@1.16.0 sdist --out dist
 
       - name: Create and push tag
         if: steps.version.outputs.needs_tag == 'true'

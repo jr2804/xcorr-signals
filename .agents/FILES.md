@@ -30,7 +30,7 @@ Kept compact — agents hallucinate less when they know where definitions live.
 | Pre-commit config      | `.pre-commit-config.yaml`                                       | Hook list                                       |
 | MCP server config      | `.config/mise/conf.d/mcp.toml`                                  | `[tasks.add-mcp-servers]`, tool list            |
 | Skills install task    | `.config/mise/conf.d/skills.toml`                               | `[tasks.add-skills]`, skill list                |
-| Release workflow       | `.github/workflows/release.yml`                                 | CalVer tag, abi3 wheel + sdist, PyPI trusted publishing |
+| Release workflow       | `.github/workflows/release.yml`                                 | CalVer tag, manylinux_2_34 abi3 wheel + sdist, PyPI trusted publishing |
 
 ## Naming conventions
 
