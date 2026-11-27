@@ -5,6 +5,6 @@ import importlib.metadata
 
 # Literal fallback for source checkouts without dist-info (editable / git
 # installs). Stamped by the release workflow together with Cargo.toml.
-__version__ = "2026.11.3"
+__version__ = "2026.11.4"
 with contextlib.suppress(importlib.metadata.PackageNotFoundError):
     __version__ = importlib.metadata.version("xcorr-signals")
