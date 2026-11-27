@@ -1748,9 +1748,9 @@ mise<span class="w"> </span>type-check
 <p>Releases are automated by <code>.github/workflows/release.yml</code>:</p>
 <ul>
 <li>Every push to <code>main</code> creates the next UTC CalVer tag (<code>YYYY.M.N</code>).</li>
-<li>The workflow builds one abi3 wheel for CPython 3.13+ and an sdist,
-  publishes both to PyPI with Trusted Publishing, then creates a GitHub
-  release.</li>
+<li>The workflow builds one <code>manylinux_2_34</code> abi3 wheel for CPython 3.13+
+  and an sdist, publishes both to PyPI with Trusted Publishing, then
+  creates a GitHub release.</li>
 <li>Include <code>[skip release]</code> anywhere in the HEAD commit message to
   suppress a release. The post-release version-stamp commit includes it
   automatically. Because the whole message is scanned, avoid quoting the
