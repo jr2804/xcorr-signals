@@ -139,8 +139,8 @@ mise docs         # build static site
 Releases are automatic. Each push to `main` creates the next `YYYY.M.N`
 CalVer tag, builds one CPython 3.13+ abi3 wheel plus an sdist, publishes
 them to PyPI via trusted publishing, and creates a GitHub release. Include
-`[skip release]` in the HEAD commit message to suppress a release; the
-post-release version-stamp commit does this automatically.
+`[skip release]` anywhere in the HEAD commit message to suppress a release;
+the post-release version-stamp commit does this automatically.
 
 ## Contributing
 

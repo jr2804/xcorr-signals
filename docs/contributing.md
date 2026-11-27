@@ -53,9 +53,10 @@ Releases are automated by `.github/workflows/release.yml`:
 - The workflow builds one abi3 wheel for CPython 3.13+ and an sdist,
   publishes both to PyPI with Trusted Publishing, then creates a GitHub
   release.
-- Include `[skip release]` in the HEAD commit message to suppress a
-  release. The post-release version-stamp commit includes it
-  automatically.
+- Include `[skip release]` anywhere in the HEAD commit message to
+  suppress a release. The post-release version-stamp commit includes it
+  automatically. Because the whole message is scanned, avoid quoting the
+  marker in the body of an otherwise normal release commit.
 
 The first upload requires a PyPI pending trusted publisher with these
 exact values:
