@@ -63,6 +63,24 @@ jobs:
     - name: Check spelling
       run: mise spell
 
+  rust-core:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    - name: Build pure Rust core
+      working-directory: src/xcorr_signals
+      run: cargo build --no-default-features
+
+    - name: Test pure Rust core
+      working-directory: src/xcorr_signals
+      run: cargo test --no-default-features
+
   tests:
     needs:
     - quality

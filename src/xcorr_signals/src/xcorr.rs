@@ -4,20 +4,16 @@ use ndarray::{ArrayView1, ArrayView2};
 use realfft::{num_complex::Complex, RealFftPlanner};
 use rustfft::FftPlanner;
 
-use pyo3::pyclass;
-
+/// Scaling mode for cross-correlation.
+///
+/// Kept free of PyO3 attributes; `pyo3_bindings::PyXCorrScaling` is the
+/// Python-facing wrapper.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[pyclass(eq, eq_int, module = "xcorr_signals")]
 pub enum XCorrScaling {
-    #[pyo3(name = "NORMALIZED")]
     Normalized,
-    #[pyo3(name = "COEFF")]
     Coeff,
-    #[pyo3(name = "BIASED")]
     Biased,
-    #[pyo3(name = "UNBIASED")]
     Unbiased,
-    #[pyo3(name = "NONE")]
     None,
 }
 
@@ -294,7 +290,9 @@ pub fn determine_delay_from_average(
         .collect())
 }
 
+#[cfg(test)]
 pub(crate) struct XorShift64(u64);
+#[cfg(test)]
 impl XorShift64 {
     pub(crate) fn new(seed: u64) -> Self { Self(seed | 1) }
     pub(crate) fn next_u64(&mut self) -> u64 {

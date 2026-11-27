@@ -11,7 +11,9 @@ description = "Rust core for cross-correlation delay estimation of audio signals
 
 [lib]
 name = "xcorr_signals"
-crate-type = ["cdylib"]
+# cdylib for the Python extension; rlib so the crate can be used as a
+# pure-Rust dependency with `default-features = false`.
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 ndarray = "0.17"
@@ -22,6 +24,7 @@ numpy = { version = "0.29", optional = true }
 
 [features]
 default = ["python"]
+# Python extension bindings; disable with --no-default-features for pure Rust.
 python = ["dep:pyo3", "dep:numpy", "pyo3/extension-module"]
 
 [profile.release]

@@ -12,6 +12,37 @@ use crate::{
     XCorrError, XCorrScaling,
 };
 
+/// Python-facing mirror of the core `XCorrScaling` enum.
+///
+/// Kept in the bindings module so the Rust core stays free of PyO3 imports
+/// and compiles with `--no-default-features`.
+#[pyclass(eq, eq_int, from_py_object, name = "XCorrScaling", module = "xcorr_signals")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PyXCorrScaling {
+    #[pyo3(name = "NORMALIZED")]
+    Normalized,
+    #[pyo3(name = "COEFF")]
+    Coeff,
+    #[pyo3(name = "BIASED")]
+    Biased,
+    #[pyo3(name = "UNBIASED")]
+    Unbiased,
+    #[pyo3(name = "NONE")]
+    None,
+}
+
+impl From<PyXCorrScaling> for XCorrScaling {
+    fn from(value: PyXCorrScaling) -> Self {
+        match value {
+            PyXCorrScaling::Normalized => Self::Normalized,
+            PyXCorrScaling::Coeff => Self::Coeff,
+            PyXCorrScaling::Biased => Self::Biased,
+            PyXCorrScaling::Unbiased => Self::Unbiased,
+            PyXCorrScaling::None => Self::None,
+        }
+    }
+}
+
 /// Extract an f64 2-D view from a NumPy array (float32 or float64).
 fn to_f64_array2<'py>(
     any: &Bound<'py, PyAny>,
@@ -71,8 +102,8 @@ fn to_f64_array1<'py>(any: &Bound<'py, PyAny>) -> PyResult<Vec<f64>> {
 
 /// Accept an XCorrScaling enum member or its lowercase string form.
 fn parse_scaling_any(any: &Bound<'_, PyAny>) -> PyResult<XCorrScaling> {
-    if let Ok(s) = any.extract::<XCorrScaling>() {
-        return Ok(s);
+    if let Ok(s) = any.extract::<PyXCorrScaling>() {
+        return Ok(s.into());
     }
     if let Ok(s) = any.extract::<String>() {
         return match s.as_str() {
@@ -88,18 +119,6 @@ fn parse_scaling_any(any: &Bound<'_, PyAny>) -> PyResult<XCorrScaling> {
     Err(PyTypeError::new_err(
         "scaling must be an XCorrScaling member or one of 'normalized', 'coeff', 'biased', 'unbiased', 'none'",
     ))
-}
-
-fn parse_scaling(s: &str) -> PyResult<XCorrScaling> {
-    match s {
-        "normalized" | "coeff" => Ok(XCorrScaling::Normalized),
-        "biased" => Ok(XCorrScaling::Biased),
-        "unbiased" => Ok(XCorrScaling::Unbiased),
-        "none" => Ok(XCorrScaling::None),
-        other => Err(pyo3::exceptions::PyValueError::new_err(format!(
-            "invalid scaling mode: {other}"
-        ))),
-    }
 }
 
 fn map_err(e: XCorrError) -> PyErr {
@@ -273,6 +292,6 @@ fn xcorr_signals(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(determine_delay_from_average_py, m)?)?;
     m.add_class::<PyXCorrFrame>()?;
     m.add_class::<PyXCorrResult>()?;
-    m.add_class::<XCorrScaling>()?;
+    m.add_class::<PyXCorrScaling>()?;
     Ok(())
 }
