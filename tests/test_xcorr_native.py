@@ -149,6 +149,7 @@ def test_jitter_averages_out() -> None:
 
 # --- Issue #1: 2D multi-channel input --------------------------------------
 
+
 def test_xcorr_2d_returns_per_channel_columns() -> None:
     n = 256
     sig1 = noise_burst(n, 16, seed=1)
@@ -170,8 +171,12 @@ def test_determine_delay_vs_time_per_channel() -> None:
     sig2 = noise_burst(n, 32, seed=4)
     ref = shifted_reference(sig1, 6)
     result = determine_delay_vs_time_py(
-        np.column_stack([sig1, sig2]), ref,
-        frame_size=256, hop_size=256, n_lags=32, scaling="normalized",
+        np.column_stack([sig1, sig2]),
+        ref,
+        frame_size=256,
+        hop_size=256,
+        n_lags=32,
+        scaling="normalized",
         reliability_threshold=0.5,
     )
     assert len(result.frames) == 2  # one entry per channel
@@ -190,14 +195,19 @@ def test_determine_delay_from_average_per_channel() -> None:
     sig2 = noise_burst(n, 32, seed=6)
     ref = shifted_reference(sig1, 8)
     delays = determine_delay_from_average_py(
-        np.column_stack([sig1, sig2]), ref,
-        frame_size=256, hop_size=256, n_lags=32, scaling="normalized",
+        np.column_stack([sig1, sig2]),
+        ref,
+        frame_size=256,
+        hop_size=256,
+        n_lags=32,
+        scaling="normalized",
     )
     assert delays.shape == (2,)
     assert delays[0] == pytest.approx(8.0)
 
 
 # --- Issue #2: unequal lengths and (N, 1) reference ------------------------
+
 
 def test_unequal_lengths_auto_padded() -> None:
     sig = noise_burst(256, 16, seed=7)
@@ -215,14 +225,18 @@ def test_reference_2d_single_column_squeezed() -> None:
 
 # --- Issue #3: multi-channel best-delay helper -----------------------------
 
+
 def test_determine_delay_multi_channel_best() -> None:
     n = 1024
     good = noise_burst(n, 32, seed=9)
     noise = noise_burst(n, 32, seed=10)
     ref = shifted_reference(good, 5)
     best_delay, best_ch, peak = determine_delay_multi_channel(
-        np.column_stack([noise, good]), ref,
-        frame_size=512, hop_size=512, n_lags=32,
+        np.column_stack([noise, good]),
+        ref,
+        frame_size=512,
+        hop_size=512,
+        n_lags=32,
     )
     assert best_ch == 1
     assert best_delay == pytest.approx(5.0)
@@ -234,12 +248,14 @@ def test_determine_delay_multi_channel_pairwise_stereo() -> None:
     n = 1024
     ref_ch0 = noise_burst(n, 32, seed=11)
     ref_ch1 = noise_burst(n, 32, seed=12)
-    deg_ch0 = shifted_reference(ref_ch0, 6)   # deg_i = ref_i delayed by 6
+    deg_ch0 = shifted_reference(ref_ch0, 6)  # deg_i = ref_i delayed by 6
     deg_ch1 = shifted_reference(ref_ch1, 10)  # stronger correlation expected
     best_delay, best_ch, peak = determine_delay_multi_channel(
         np.column_stack([deg_ch0, deg_ch1]),
         np.column_stack([ref_ch0, ref_ch1]),
-        frame_size=512, hop_size=512, n_lags=32,
+        frame_size=512,
+        hop_size=512,
+        n_lags=32,
     )
     assert best_ch in (0, 1)
     assert 0.0 < peak <= 1.0
@@ -252,12 +268,16 @@ def test_determine_delay_multi_channel_pairwise_stereo() -> None:
 def test_determine_delay_multi_channel_mismatch_rejected() -> None:
     with pytest.raises(ValueError, match="channel mismatch"):
         determine_delay_multi_channel(
-            np.zeros((128, 2)), np.zeros((128, 3)),
-            frame_size=128, hop_size=128, n_lags=8,
+            np.zeros((128, 2)),
+            np.zeros((128, 3)),
+            frame_size=128,
+            hop_size=128,
+            n_lags=8,
         )
 
 
 # --- Issue #5: XCorrScaling enum -------------------------------------------
+
 
 def test_xcorr_scaling_enum_and_string_equivalent() -> None:
     sig = noise_burst(256, 16, seed=13)
@@ -271,8 +291,7 @@ def test_xcorr_scaling_enum_members() -> None:
     # XCorrScaling members are pyo3 complex-enum values:
     # verify each variant is accessible via its Python-level name.
     variants = {"NORMALIZED", "COEFF", "BIASED", "UNBIASED", "NONE"}
-    for member in (XCorrScaling.NORMALIZED, XCorrScaling.COEFF, XCorrScaling.BIASED,
-                   XCorrScaling.UNBIASED, XCorrScaling.NONE):
+    for member in (XCorrScaling.NORMALIZED, XCorrScaling.COEFF, XCorrScaling.BIASED, XCorrScaling.UNBIASED, XCorrScaling.NONE):
         assert str(member).split(".")[-1] in variants
 
 
