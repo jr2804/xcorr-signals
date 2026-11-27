@@ -44,3 +44,26 @@ mise type-check
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+### Releasing
+
+Releases are automated by `.github/workflows/release.yml`:
+
+- Every push to `main` creates the next UTC CalVer tag (`YYYY.M.N`).
+- The workflow builds one abi3 wheel for CPython 3.13+ and an sdist,
+  publishes both to PyPI with Trusted Publishing, then creates a GitHub
+  release.
+- Include `[skip release]` in the HEAD commit message to suppress a
+  release. The post-release version-stamp commit includes it
+  automatically.
+
+The first upload requires a PyPI pending trusted publisher with these
+exact values:
+
+| Field | Value |
+|-------|-------|
+| PyPI project name | `xcorr-signals` |
+| Owner | `jr2804` |
+| Repository name | `xcorr-signals` |
+| Workflow name | `release.yml` |
+| Environment name | `pypi` |

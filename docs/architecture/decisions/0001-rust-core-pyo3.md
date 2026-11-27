@@ -31,3 +31,8 @@ all public types are NumPy arrays. Layout follows the single-crate default:
 bindings sit behind the `python` feature. Consumers using
 `default-features = false` therefore get the pure-Rust core without a Python
 dependency (GitHub issue #6).
+
+**Amendment (2026-11-27)**: PyO3 is built with `abi3-py313`, so one
+`cp313-abi3` wheel serves CPython 3.13 and newer. `release.yml` publishes
+that wheel and the sdist to PyPI with Trusted Publishing on every `main`
+push, unless the HEAD commit contains `[skip release]`.

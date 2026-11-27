@@ -1,12 +1,10 @@
 name: release
 
 on:
-
   push:
     branches:
       - main
   workflow_dispatch:
-
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,101 +15,116 @@ defaults:
     shell: bash
 
 jobs:
-
   release:
-
-    if: "github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release): stamp')"
-
+    # Manual dispatches always run; pushes skip when HEAD says [skip release].
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+       !contains(github.event.head_commit.message, '[skip release]'))
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/xcorr-signals
     permissions:
       contents: write
+      id-token: write
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        fetch-tags: true
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
-    - name: Setup Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: "3.13"
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
 
-    - name: Setup uv
-      uses: astral-sh/setup-uv@v5
-      with:
-        enable-cache: true
-        cache-dependency-glob: pyproject.toml
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
 
+      - name: Compute next calendar version
+        id: version
+        run: |
+          set -euo pipefail
 
-    - name: Compute next calendar version
-      id: version
-      run: |
-        set -euo pipefail
+          existing_head_tag="$(git tag --points-at HEAD | grep -E '^[0-9]{4}\.[0-9]{2}\.[0-9]+$' | head -n 1 || true)"
+          if [ -n "$existing_head_tag" ]; then
+            echo "version=$existing_head_tag" >> "$GITHUB_OUTPUT"
+            echo "needs_tag=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
-        existing_head_tag="$(git tag --points-at HEAD | grep -E '^[0-9]{4}\.[0-9]{2}\.[0-9]+$' | head -n 1 || true)"
-        if [ -n "$existing_head_tag" ]; then
-          echo "version=$existing_head_tag" >> "$GITHUB_OUTPUT"
-          echo "needs_tag=false" >> "$GITHUB_OUTPUT"
-          exit 0
-        fi
+          year="$(date -u +%Y)"
+          month="$(date -u +%m)"
 
-        year="$(date -u +%Y)"
-        month="$(date -u +%m)"
+          git fetch --tags --force
 
-        git fetch --tags --force
-
-        prefix="${year}.${month}."
-        highest="$(git tag --list "${prefix}*" | sed -n "s/^${year}\\.${month}\\.\\([0-9][0-9]*\\)$/\\1/p" | sort -n | tail -n 1)"
-        counter="${highest:-0}"
-        next="$((counter + 1))"
-        version="${year}.${month}.${next}"
-
-        while git rev-parse -q --verify "refs/tags/${version}" >/dev/null; do
-          next="$((next + 1))"
+          prefix="${year}.${month}."
+          highest="$(git tag --list "${prefix}*" | sed -n "s/^${year}\\.${month}\\.\\([0-9][0-9]*\\)$/\\1/p" | sort -n | tail -n 1)"
+          counter="${highest:-0}"
+          next="$((counter + 1))"
           version="${year}.${month}.${next}"
-        done
 
-        echo "version=$version" >> "$GITHUB_OUTPUT"
-        echo "needs_tag=true" >> "$GITHUB_OUTPUT"
+          while git rev-parse -q --verify "refs/tags/${version}" >/dev/null; do
+            next="$((next + 1))"
+            version="${year}.${month}.${next}"
+          done
 
-    - name: Create and push tag
-      if: steps.version.outputs.needs_tag == 'true'
-      run: |
-        set -euo pipefail
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        version="${{ steps.version.outputs.version }}"
-        git tag -a "$version" -m "Release $version"
-        git push origin "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "needs_tag=true" >> "$GITHUB_OUTPUT"
 
+      - name: Build package
+        run: |
+          set -euo pipefail
+          # maturin derives the wheel/sdist version from Cargo.toml ([project]
+          # version is dynamic) — stamp it so artifacts match the CalVer tag.
+          # Cargo uses strict semver: strip leading zeros (2026.09.2 -> 2026.9.2).
+          calver="${{ steps.version.outputs.version }}"
+          cargo_version="$(printf '%s' "$calver" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
+          sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
+            src/xcorr_signals/Cargo.toml
+          # Keep the committed lockfile's local package version in lockstep.
+          sed -i "/^name = \"xcorr_signals_core\"$/,/^version = / \
+            s/^version = \".*\"/version = \"${cargo_version}\"/" \
+            src/xcorr_signals/Cargo.lock
+          # Also stamp __about__.py so source checkouts / editable installs
+          # report the real version instead of falling back to 0.0.0.
+          sed -i "s/^__version__ = \".*\"/__version__ = \"${cargo_version}\"/" \
+            src/xcorr_signals/__about__.py
+          # Assert all landed — a silent patch failure ships 0.0.0 wheels.
+          grep -q "^version = \"${cargo_version}\"$" src/xcorr_signals/Cargo.toml
+          grep -A1 '^name = "xcorr_signals_core"$' src/xcorr_signals/Cargo.lock \
+            | grep -q "^version = \"${cargo_version}\"$"
+          grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
+          uv build
 
-    - name: Build package
-      run: |
-        set -euo pipefail
-        # maturin derives the wheel/sdist version from Cargo.toml ([project]
-        # version is dynamic) — stamp it so artifacts match the CalVer tag.
-        # Cargo uses strict semver: strip leading zeros (2026.09.2 -> 2026.9.2).
-        calver="${{ steps.version.outputs.version }}"
-        cargo_version="$(printf '%s' "$calver" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
-        sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
-          src/xcorr_signals/Cargo.toml
-        # Also stamp __about__.py so source checkouts / editable installs
-        # report the real version instead of falling back to 0.0.0.
-        sed -i "s/^__version__ = \".*\"/__version__ = \"${cargo_version}\"/" \
-          src/xcorr_signals/__about__.py
-        # Assert both landed — a silent patch failure ships 0.0.0 wheels.
-        grep -q "^version = \"${cargo_version}\"$" src/xcorr_signals/Cargo.toml
-        grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
-        uv build
+      - name: Create and push tag
+        if: steps.version.outputs.needs_tag == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          version="${{ steps.version.outputs.version }}"
+          git tag -a "$version" -m "Release $version"
+          git push origin "$version"
 
-    - name: Create release
-      uses: softprops/action-gh-release@v2
-      with:
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          skip-existing: true
 
-        tag_name: ${{ steps.version.outputs.version }}
-        name: ${{ steps.version.outputs.version }}
-
-        files: dist/*
-        generate_release_notes: true
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          generate_release_notes: true

@@ -92,8 +92,16 @@ change. Summary:
 
 _Always-injected_ — keep minimal. Everything else → `.agents/` files.
 
-- **Issue tracking:** beads. Run `mise exec -- bd` — `bd` is not on PATH. Sync with `bd sync`; shared data lives on git ref `refs/dolt/data`. Do not hand-edit `.beads/`.
-- **mise Python tools:** use the `pypi:` backend (for example `pypi:pyreorder`); `pipx:` is deprecated. Keep `[settings.pypi] uvx = true` and do not reintroduce `pipx:` in `config.toml` or `dev-features.csv`.
+- **Issue tracking:** beads. Run `mise exec -- bd` — `bd` is not on PATH.
+  Sync with `bd sync`; shared data lives on git ref `refs/dolt/data`.
+  Do not hand-edit `.beads/`.
+- **mise Python tools:** use the `pypi:` backend (for example
+  `pypi:pyreorder`); `pipx:` is deprecated. Keep `[settings.pypi] uvx = true`
+  and do not reintroduce `pipx:` in `config.toml` or `dev-features.csv`.
+- **Releases:** every push to `main` runs `.github/workflows/release.yml`
+  (CalVer tag, abi3 wheel + sdist, PyPI trusted publishing, GitHub release).
+  Put `[skip release]` in the HEAD commit message to suppress a release;
+  never hand-edit the stamped version to force a release.
 
 ## Child DOX Index
 

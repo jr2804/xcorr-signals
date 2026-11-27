@@ -44,9 +44,14 @@ jobs:
           # Cargo-compatible: strip leading zeros per semver (2026.09.2 -> 2026.9.2).
           cargo_version="$(printf '%s' "$version" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
 
-          # Idempotent: no-op if already stamped (manual re-run safety).
-          current="$(sed -nE 's/^version = "([^"]*)"$/\1/p' src/xcorr_signals/Cargo.toml | head -n1)"
-          if [ "$current" = "$cargo_version" ]; then
+          # Idempotent: no-op only when every version-bearing file matches.
+          current_cargo="$(sed -nE 's/^version = "([^"]*)"$/\1/p' src/xcorr_signals/Cargo.toml | head -n1)"
+          current_about="$(sed -nE 's/^__version__ = "([^"]*)"$/\1/p' src/xcorr_signals/__about__.py | head -n1)"
+          current_lock="$(grep -A1 '^name = "xcorr_signals_core"$' src/xcorr_signals/Cargo.lock \
+            | sed -nE 's/^version = "([^"]*)"$/\1/p' | head -n1)"
+          if [ "$current_cargo" = "$cargo_version" ] \
+            && [ "$current_about" = "$cargo_version" ] \
+            && [ "$current_lock" = "$cargo_version" ]; then
             echo "Already at ${cargo_version} — nothing to do."
             exit 0
           fi
@@ -56,23 +61,31 @@ jobs:
           # back to the stamped Cargo.toml — no patch needed there.
           sed -i "s/^version = \".*\"/version = \"${cargo_version}\"/" \
             src/xcorr_signals/Cargo.toml
+          sed -i "/^name = \"xcorr_signals_core\"$/,/^version = / \
+            s/^version = \".*\"/version = \"${cargo_version}\"/" \
+            src/xcorr_signals/Cargo.lock
           sed -i "s/^__version__ = \".*\"/__version__ = \"${cargo_version}\"/" \
             src/xcorr_signals/__about__.py
 
           # Assertions turn any silent patch failure into a job failure.
           grep -q "^version = \"${cargo_version}\"$" src/xcorr_signals/Cargo.toml
+          grep -A1 '^name = "xcorr_signals_core"$' src/xcorr_signals/Cargo.lock \
+            | grep -q "^version = \"${cargo_version}\"$"
           grep -q "^__version__ = \"${cargo_version}\"$" src/xcorr_signals/__about__.py
 
-          # Skip when this is itself a stamp commit (anti-recursion).
-          if git log -1 --pretty=%B HEAD | grep -q "chore(release): stamp"; then
+          # Skip when this is itself a stamp commit (anti-recursion). The
+          # marker also prevents release.yml from running on the bump commit.
+          if git log -1 --pretty=%B HEAD \
+            | grep -qE 'chore\(release\): stamp|\[skip release\]'; then
             echo "HEAD is a stamp commit — skipping to avoid recursion."
             exit 0
           fi
 
-          git add src/xcorr_signals/Cargo.toml src/xcorr_signals/__about__.py
+          git add src/xcorr_signals/Cargo.toml src/xcorr_signals/Cargo.lock \
+            src/xcorr_signals/__about__.py
           git -c user.name="github-actions[bot]" \
               -c user.email="github-actions[bot]@users.noreply.github.com" \
-              commit -m "chore(release): stamp ${cargo_version}"
+              commit -m "chore(release): stamp ${cargo_version} [skip release]"
           git push origin HEAD:main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

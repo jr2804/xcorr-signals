@@ -19,7 +19,8 @@ crate-type = ["cdylib", "rlib"]
 ndarray = "0.17"
 rustfft = "6.2"
 realfft = "3.4"
-pyo3 = { version = "0.29", optional = true }
+# abi3-py313 keeps one wheel installable on CPython 3.13 and newer.
+pyo3 = { version = "0.29", optional = true, features = ["abi3-py313"] }
 numpy = { version = "0.29", optional = true }
 
 [features]

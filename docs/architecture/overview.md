@@ -81,3 +81,5 @@ always float64.
 
 The PyO3/NumPy layer is behind the default `python` feature. Building with
 `--no-default-features` produces a pure-Rust `rlib` for use as a dependency.
+Release wheels use the `abi3-py313` stable ABI, so one `cp313-abi3` wheel
+serves CPython 3.13 and newer.

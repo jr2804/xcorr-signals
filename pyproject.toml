@@ -6,14 +6,28 @@ name = "xcorr-signals"
 dynamic = ["version"]
 description = "Fast cross-correlation for determining and compensating delay between audio signal channels, implemented in Rust"
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.13"
 authors = [
     { name = "Jan.Reimes", email = "jan.reimes@head-acoustics.com" }
 ]
+keywords = [
+    "audio",
+    "cross-correlation",
+    "delay-estimation",
+    "dsp",
+    "signal-processing",
+]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
     "Topic :: Multimedia :: Sound/Audio :: Analysis",
     "Topic :: Scientific/Engineering",
 ]
@@ -21,6 +35,12 @@ dependencies = [
     "typer>=0.12.0",
     "numpy>=2.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/jr2804/xcorr-signals"
+Documentation = "https://jr2804.github.io/xcorr-signals/"
+Repository = "https://github.com/jr2804/xcorr-signals"
+Issues = "https://github.com/jr2804/xcorr-signals/issues"
 
 [project.scripts]
 xcorr-signals = "xcorr_signals.cli.app:cli"
@@ -34,14 +54,14 @@ dev = [
     "markdown-exec>=1.8",
     "markdown-callouts>=0.4",
     "ghp-import>=2.1",
-    "maturin>=1.5.0",
+    "maturin>=1.16.0",
     "mkdocs-mermaid2-plugin>=1.2",
     "xy>=0.0.7",
     "matplotlib>=3.8",
 ]
 
 [build-system]
-requires = ["maturin>=1.5.0"]
+requires = ["maturin>=1.16.0"]
 build-backend = "maturin"
 
 [tool.maturin]

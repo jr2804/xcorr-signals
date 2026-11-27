@@ -5,6 +5,7 @@
 
 <!-- markdownlint-disable MD033 -->
 <p align="center">
+  <a href="https://pypi.org/project/xcorr-signals/"><img alt="PyPI" src="https://img.shields.io/pypi/v/xcorr-signals"></a>
   <a href="#"><img alt="Python 3.13+" src="https://img.shields.io/badge/python-3.13%2B-3776ab?logo=python"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
   <a href="https://github.com/jr2804/xcorr-signals/actions"><img alt="CI" src="https://github.com/jr2804/xcorr-signals/actions/workflows/ci.yml/badge.svg"></a>
@@ -133,7 +134,13 @@ mise docs         # build static site
 | Workflow | Triggers | Jobs |
 |----------|----------|------|
 | **CI** (`ci.yml`) | push, PR to `main` | test matrix (3 OS × 3 Python versions) + lint + docs |
-| **Release** (`release.yml`) | CalVer tag push | build platform wheels + sdist, publish to PyPI |
+| **Release** (`release.yml`) | push to `main` (unless HEAD contains `[skip release]`) | CalVer tag + abi3 wheel/sdist, PyPI publish, GitHub release |
+
+Releases are automatic. Each push to `main` creates the next `YYYY.M.N`
+CalVer tag, builds one CPython 3.13+ abi3 wheel plus an sdist, publishes
+them to PyPI via trusted publishing, and creates a GitHub release. Include
+`[skip release]` in the HEAD commit message to suppress a release; the
+post-release version-stamp commit does this automatically.
 
 ## Contributing
 
