@@ -1497,6 +1497,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Releasing
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1638,6 +1649,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Releasing
+      </span>
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1722,6 +1744,49 @@ mise<span class="w"> </span>type-check
 <li>Push to the branch (<code>git push origin feature/amazing-feature</code>)</li>
 <li>Open a Pull Request</li>
 </ol>
+<h3 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">&para;</a></h3>
+<p>Releases are automated by <code>.github/workflows/release.yml</code>:</p>
+<ul>
+<li>Every push to <code>main</code> creates the next UTC CalVer tag (<code>YYYY.M.N</code>).</li>
+<li>The workflow builds one abi3 wheel for CPython 3.13+ and an sdist,
+  publishes both to PyPI with Trusted Publishing, then creates a GitHub
+  release.</li>
+<li>Include <code>[skip release]</code> in the HEAD commit message to suppress a
+  release. The post-release version-stamp commit includes it
+  automatically.</li>
+</ul>
+<p>The first upload requires a PyPI pending trusted publisher with these
+exact values:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyPI project name</td>
+<td><code>xcorr-signals</code></td>
+</tr>
+<tr>
+<td>Owner</td>
+<td><code>jr2804</code></td>
+</tr>
+<tr>
+<td>Repository name</td>
+<td><code>xcorr-signals</code></td>
+</tr>
+<tr>
+<td>Workflow name</td>
+<td><code>release.yml</code></td>
+</tr>
+<tr>
+<td>Environment name</td>
+<td><code>pypi</code></td>
+</tr>
+</tbody>
+</table>
 
 
 

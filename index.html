@@ -1676,6 +1676,7 @@ audio signal channels. A Rust DSP core exposed through a Python API and CLI.</p>
 </blockquote>
 <!-- markdownlint-disable MD033 -->
 <p align="center">
+  <a href="https://pypi.org/project/xcorr-signals/"><img alt="PyPI" src="https://img.shields.io/pypi/v/xcorr-signals"></a>
   <a href="#"><img alt="Python 3.13+" src="https://img.shields.io/badge/python-3.13%2B-3776ab?logo=python"></a>
   <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
   <a href="https://github.com/jr2804/xcorr-signals/actions"><img alt="CI" src="https://github.com/jr2804/xcorr-signals/actions/workflows/ci.yml/badge.svg"></a>
@@ -1823,11 +1824,16 @@ mise<span class="w"> </span>docs<span class="w">         </span><span class="c1"
 </tr>
 <tr>
 <td><strong>Release</strong> (<code>release.yml</code>)</td>
-<td>CalVer tag push</td>
-<td>build platform wheels + sdist, publish to PyPI</td>
+<td>push to <code>main</code> (unless HEAD contains <code>[skip release]</code>)</td>
+<td>CalVer tag + abi3 wheel/sdist, PyPI publish, GitHub release</td>
 </tr>
 </tbody>
 </table>
+<p>Releases are automatic. Each push to <code>main</code> creates the next <code>YYYY.M.N</code>
+CalVer tag, builds one CPython 3.13+ abi3 wheel plus an sdist, publishes
+them to PyPI via trusted publishing, and creates a GitHub release. Include
+<code>[skip release]</code> in the HEAD commit message to suppress a release; the
+post-release version-stamp commit does this automatically.</p>
 <h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h2>
 <p>See <a href="https://jr2804.github.io/xcorr-signals/contributing/">Contributing</a> and
 <a href="https://jr2804.github.io/xcorr-signals/code_of_conduct/">Code of Conduct</a>.</p>
