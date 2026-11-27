@@ -4,34 +4,7 @@
         <loc>https://github.com/jr2804/xcorr-signals/</loc>
       </url>
       <url>
-        <loc>https://github.com/jr2804/xcorr-signals/credits/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/license/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/getting-started/quickstart/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/guides/delay-estimation/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/examples/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/concepts/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/concepts/cross-correlation/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/concepts/convolution/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/concepts/hilbert-transform/</loc>
-      </url>
-      <url>
-        <loc>https://github.com/jr2804/xcorr-signals/architecture/overview/</loc>
+        <loc>https://github.com/jr2804/xcorr-signals/AGENTS/</loc>
       </url>
       <url>
         <loc>https://github.com/jr2804/xcorr-signals/architecture/decisions/0001-rust-core-pyo3/</loc>
@@ -43,15 +16,45 @@
         <loc>https://github.com/jr2804/xcorr-signals/architecture/decisions/0003-real-hilbert-realfft/</loc>
       </url>
       <url>
-        <loc>https://github.com/jr2804/xcorr-signals/reference/api/</loc>
+        <loc>https://github.com/jr2804/xcorr-signals/architecture/overview/</loc>
       </url>
       <url>
-        <loc>https://github.com/jr2804/xcorr-signals/reference/cli/</loc>
+        <loc>https://github.com/jr2804/xcorr-signals/code_of_conduct/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/concepts/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/concepts/convolution/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/concepts/cross-correlation/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/concepts/hilbert-transform/</loc>
       </url>
       <url>
         <loc>https://github.com/jr2804/xcorr-signals/contributing/</loc>
       </url>
       <url>
-        <loc>https://github.com/jr2804/xcorr-signals/code_of_conduct/</loc>
+        <loc>https://github.com/jr2804/xcorr-signals/credits/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/examples/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/getting-started/quickstart/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/guides/delay-estimation/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/license/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/reference/api/</loc>
+      </url>
+      <url>
+        <loc>https://github.com/jr2804/xcorr-signals/reference/cli/</loc>
       </url>
 </urlset>
